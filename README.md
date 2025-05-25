@@ -45,7 +45,7 @@ Use the `test` function to write test cases and the `describe` function to group
 
 More example:
 
-- https://github.com/VadimNastoyashchy/scripterio-boilerplate-project (Unit, API, E2E tests)
+- https://github.com/scripterio-js/scripterio-example (Unit, API, E2E tests)
 - https://github.com/VadimNastoyashchy/json-mcp (Unit tests)
 
 Let's start by creating the `test.js` test file:

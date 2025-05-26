@@ -3,7 +3,7 @@
 </p>
 
 <p align="center">
-<b>ScripterI/O - Simple, fast, dependency free, ESM (ECMA script modules) runner for testing all JavaScript</b>
+<b>ScripterI/O - Simple, fast, dependency-free, ESM (ECMA script modules) runner for testing all JavaScript</b>
 </p>
 
 <p align="center">
@@ -43,7 +43,7 @@ yarn add scripterio --dev
 
 Use the `test` function to write test cases and the `describe` function to group them. 
 
-More example:
+More examples:
 
 - https://github.com/scripterio-js/scripterio-example (Unit, API, E2E tests)
 - https://github.com/VadimNastoyashchy/json-mcp (Unit tests)
@@ -149,7 +149,7 @@ describe.skip('description', () => {})
 
 ## `Context options`
 
-Use `{}` as the second param for describe and tests func.
+Use `{}` as the second parameter for describe and test functions.
 
 ---
 
@@ -202,7 +202,7 @@ describe('Unit tests:', () => {
 })
 ```
 
-You can now run tests that have a tags separated by `,` (comma) with `--tags` command line option:
+You can now run tests that have tags separated by `,` (comma) with `--tags` command line option:
 
 ```bash
 npx scripterio --folder="tests" --tags="smoke,regression"
@@ -212,7 +212,7 @@ npx scripterio --folder="tests" --tags="smoke,regression"
 ## `Async/Await support`
 
 Also supports async/await approach.
-To use it just add `async` keyword before function callback inside `test` block:
+To use it, just add `async` keyword before the function callback inside the `test` block:
 
 ### `Example↓`
 

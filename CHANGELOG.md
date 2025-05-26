@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Unreleased
 
 ### Added
-Based on [Add tag test](https://github.com/scripterio-js/scripterio/issues/15):
+- Based on [Add tag test](https://github.com/scripterio-js/scripterio/issues/15):
 - New context option `tags` to tag a test or a test group.
 - Now its possible to specify single tag:
 

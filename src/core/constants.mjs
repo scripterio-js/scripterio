@@ -19,5 +19,6 @@ export const EXIT_CODES = {
 export const ARGS = {
   FILE: '--file=',
   FOLDER: '--folder=',
+  TAGS: '--tags=',
   HELP: '--help',
 }

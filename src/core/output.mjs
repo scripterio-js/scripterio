@@ -4,17 +4,19 @@ import { applyColor } from '../utils/transform.mjs'
 
 export const printHelp = () => {
   console.log(
-    'Available options: ' +
+    'Available CLI options: ' +
       EOL +
       '' +
       EOL +
-      `${ARGS.FILE}        <path>  ${'Path to your test file'}` +
+      `${ARGS.FILE}        <path>  Path to your test file (e.g., test.js)` +
       EOL +
-      `${ARGS.FOLDER}      <path>  ${'Path to your tests folder'}` +
+      `${ARGS.FOLDER}      <path>  Path to your tests directory (e.g., tests)` +
+      EOL +
+      `${ARGS.TAGS}        <tags>  Tags to filter specific tests (e.g., unit,smoke)` +
       EOL +
       '' +
       EOL +
-      `${ARGS.HELP}                 ${'Display help for command'}` +
+      `${ARGS.HELP}                 Display help for command` +
       EOL +
       ''
   )
@@ -41,3 +43,7 @@ export const printRunningTestFile = (testFile) => {
 }
 
 export const printNewLine = () => console.log('')
+
+export const printTags = (tags) => {
+  console.log('Using tags:' + EOL, tags)
+}

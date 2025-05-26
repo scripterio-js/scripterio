@@ -1,9 +1,9 @@
 <p align="center">
-  <img src="assets/logo.png" height="100" alt="ScripterI/O  test framework logo"/>
+  <img src="assets/logo.jpg" height="100" alt="ScripterI/O  test framework logo"/>
 </p>
 
 <p align="center">
-<b>ScripterI/O - Simple, fast, ESM runner for testing all JavaScript</b>
+<b>ScripterI/O - Simple, fast, dependency free, ESM (ECMA script modules) runner for testing all JavaScript</b>
 </p>
 
 <p align="center">
@@ -19,13 +19,15 @@
   <a href="https://www.npmjs.com/package/scripterio">Link to NPM repository > scripterio</a> 
 </p>
 
-<p align="center">ScripterI/O is a JavaScript testing framework running on Node.js that makes testing easy and fun.</p>
-
 ## Getting started
 
-> Before you follow the steps below, make sure that you have:
+> **Before you follow the steps below, make sure that you have:**
 
 [Node.js](https://nodejs.org/en/download/) installed _globally_ only your system
+
+> *Runner has JavaScript support only!*
+
+> *Runner has ESM support only!*
 
 ## Installing
 
@@ -43,14 +45,10 @@ Use the `test` function to write test cases and the `describe` function to group
 
 More example:
 
-- https://github.com/VadimNastoyashchy/scripterio-boilerplate-project
-- https://github.com/VadimNastoyashchy/json-mcp
+- https://github.com/scripterio-js/scripterio-example (Unit, API, E2E tests)
+- https://github.com/VadimNastoyashchy/json-mcp (Unit tests)
 
-Let's start by creating the `test.js` test file.
-
-> Runner has JavaScript support only
-
-> Runner has ESM support only
+Let's start by creating the `test.js` test file:
 
 ### `Example↓`
 
@@ -59,8 +57,8 @@ test.js
 ```js
 import { describe, test, expect} from 'scripterio'
 
-describe('Title for describe block', () => {
-  test('Title for test', () => {
+describe('Unit tests:', () => {
+  test('Array has correct length', () => {
     const arr = [1, 2, 3]
     expect(arr).toHaveLength(3)
   })
@@ -153,27 +151,68 @@ describe.skip('description', () => {})
 
 Use `{}` as the second param for describe and tests func.
 
-### `Example↓`
-
-```js
-test('description', {}, () => {})
-//or
-describe('description', {}, () => {})
-```
-
 ---
 
 | Option Name         | Description                                                             |
 | ------------------- | ----------------------------------------------------------------------- |
 | `{ timeout: 2000 }` | Option timeout (in ms) for specifying how long to wait before aborting. |
 |                     | The default timeout is 5 seconds.                                       |
+| `{ tags: 'smoke' }` | To tag a test, either provide an additional details object              |
+|                     | when declaring a test.                                                  |
+|                     | You can also tag all tests in a group or provide multiple tags:         |
+|                     | `{ tags: ['smoke', 'regression'] }`                                     |
 
+### `Timeout example↓`
+
+```js
+test('Wait 1 sec and check', { timeout: 2000}, async () => {
+  const number = await new Promise((resolve) =>
+    setTimeout(() => resolve(1), 1_000)
+  )
+  expect(number).toBeDefined()
+})
+```
+
+### `Tags example↓`
+
+Single tag:
+
+```js
+describe('Unit tests:', () => {
+  test('Array has correct length', { tags: 'smoke' }, () => {
+    const arr = [1, 2, 3]
+    expect(arr).toHaveLength(3)
+  })
+})
+```
+You can now run tests that have a particular tag with `--tags` command line option:
+
+```bash
+npx scripterio --folder="tests" --tags="smoke"
+```
+
+Multiple tags:
+
+```js
+describe('Unit tests:', () => {
+  test('Array has correct length', { tags: ['smoke', 'regression'] }, () => {
+    const arr = [1, 2, 3]
+    expect(arr).toHaveLength(3)
+  })
+})
+```
+
+You can now run tests that have a tags separated by `,` (comma) with `--tags` command line option:
+
+```bash
+npx scripterio --folder="tests" --tags="smoke,regression"
+```
 ---
 
 ## `Async/Await support`
 
 Also supports async/await approach.
-To use it just add `async` keyword before function callback inside `test` block
+To use it just add `async` keyword before function callback inside `test` block:
 
 ### `Example↓`
 

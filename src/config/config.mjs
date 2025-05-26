@@ -1,15 +1,21 @@
 /* eslint-disable space-before-function-paren */
 import { EOL } from 'os'
-import { getFileNameFromArgs, getFolderNameFromArgs } from '../core/cli.mjs'
+import {
+  getFileNameFromArgs,
+  getFolderNameFromArgs,
+  getTagsFromArgs,
+} from '../core/cli.mjs'
 import { printHelp } from '../core/output.mjs'
 import { applyColor } from '../utils/transform.mjs'
 
 const file = getFileNameFromArgs()
 const folder = getFolderNameFromArgs()
+const tags = getTagsFromArgs()
 
 const config = {
   file,
   folder,
+  tags,
 }
 
 export const getConfig = () => {

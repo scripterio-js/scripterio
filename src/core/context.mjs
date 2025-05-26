@@ -28,11 +28,12 @@ const makeDescribe = (name, options) => ({
   children: [],
 })
 
-const makeTest = (name, body, timeout = defaultTimeout) => ({
+const makeTest = (name, body, timeout = defaultTimeout, tags = []) => ({
   name,
   body,
   errors: [],
   timeout: new TimeoutError(timeout),
+  tags: Array.isArray(tags) ? tags : [tags],
 })
 
 currentDescribe = makeDescribe('root')
@@ -56,7 +57,7 @@ export const test = (name, optionsOrBody, body) => {
     ...currentDescribe,
     children: [
       ...currentDescribe.children,
-      makeTest(name, actualBody, options.timeout),
+      makeTest(name, actualBody, options.timeout, options.tags),
     ],
   }
 }
@@ -164,10 +165,26 @@ const invokeAfterAll = async () => {
 const runBlock = (block) =>
   isTestBlock(block) ? runTest(block) : runDescribe(block)
 
-export const runParsedBlocks = async () => {
+export const runParsedBlocks = async (tags) => {
   const withFocus = focusedOnly(currentDescribe)
-  for (let i = 0; i < withFocus.children.length; ++i) {
-    await runBlock(withFocus.children[i])
+
+  const filterByTags = (block) => {
+    if (isTestBlock(block)) {
+      if (!tags || block.tags.some((tag) => tags.includes(tag))) {
+        return block
+      }
+      return null
+    }
+    return {
+      ...block,
+      children: block.children.map(filterByTags).filter(Boolean),
+    }
+  }
+
+  const filteredBlocks = tags ? filterByTags(withFocus) : withFocus
+
+  for (let i = 0; i < filteredBlocks.children.length; ++i) {
+    await runBlock(filteredBlocks.children[i])
   }
   return { successes, failures }
 }

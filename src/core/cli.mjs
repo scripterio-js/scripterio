@@ -36,3 +36,8 @@ export const getFolderNameFromArgs = () => {
   const customArgPrefix = ARGS.FOLDER
   return getCustomArgFromArgs(customArgPrefix) || ''
 }
+
+export const getTagsFromArgs = () => {
+  const customArgPrefix = ARGS.TAGS
+  return getCustomArgFromArgs(customArgPrefix) || ''
+}

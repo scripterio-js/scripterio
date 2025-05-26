@@ -10,6 +10,7 @@ import {
   printExecutionTime,
   printRunningTestFile,
   printNewLine,
+  printTags,
 } from './output.mjs'
 
 const config = getConfig()
@@ -33,11 +34,16 @@ const getTestFiles = async () => {
   return getMultipleFilePath(path.resolve(process.cwd(), config.folder))
 }
 
+const getTags = () => {
+  return config.tags ? config.tags.split(',') : ''
+}
+
 const chooseTestFiles = () =>
   hasSingleFile() ? getSingleFilePath() : getTestFiles()
 
 export const run = async () => {
   const startTimeStamp = timeStamp()
+  const tags = getTags()
   try {
     const testFilePaths = await chooseTestFiles()
     await Promise.all(
@@ -46,7 +52,8 @@ export const run = async () => {
         await import(testFilePath)
       })
     )
-    const { failures, successes } = await runParsedBlocks()
+    tags && printTags(tags)
+    const { failures, successes } = await runParsedBlocks(tags)
     printFailuresMsg(failures)
     printTestResult(failures, successes)
     const endTimeStamp = timeStamp()

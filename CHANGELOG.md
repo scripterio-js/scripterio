@@ -7,11 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## 1.0.6 - 2025-05-26
 ### Added
 - Based on [Add tag test](https://github.com/scripterio-js/scripterio/issues/15):
 - New context option `tags` to tag a test or a test group.
 - Now its possible to specify single tag:
-
+  
   ```js
   test('test login page', {
     tags: 'regression',
@@ -23,8 +24,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   ```bash
   --tags=regression
   ```
-
- -  Now its possible to specify multiple tags:
+  
+   -  Now its possible to specify multiple tags:
   ```js
   test('test login page', {
     tags: ['regression', 'smoke']
@@ -33,11 +34,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   });
   ```
   and run the test\s using additional flag:
-
+  
   ```bash
   --tags=regression,smoke
   ```
-
+  
   - Added [scripterio-example](https://github.com/scripterio-js/scripterio-example)
     Various examples of how to perform unit, API, and UI testing using ScripterI/O.
 

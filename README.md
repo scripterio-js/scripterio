@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="assets/logo.jpg" height="100" alt="ScripterI/O  test framework logo"/>
+  <img src="assets/logo.png" height="100" alt="ScripterI/O  test framework logo"/>
 </p>
 
 <p align="center">

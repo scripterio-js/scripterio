@@ -38,6 +38,9 @@ Based on [Add tag test](https://github.com/scripterio-js/scripterio/issues/15):
   --tags=regression,smoke
   ```
 
+  - Added [scripterio-example](https://github.com/scripterio-js/scripterio-example)
+    Various examples of how to perform unit, API, and UI testing using ScripterI/O.
+
 ### Changed
 - Moved repository from `personal` type: (https://github.com/VadimNastoyashchy/scripterio)
   to: its `organization` (https://github.com/scripterio-js)

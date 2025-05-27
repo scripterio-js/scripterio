@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Changed
+- Correct version
+
 ## 1.0.6 - 2025-05-26
 ### Added
 - Based on [Add tag test](https://github.com/scripterio-js/scripterio/issues/15):

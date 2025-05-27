@@ -1,6 +1,6 @@
 {
   "name": "scripterio",
-  "version": "1.0.6",
+  "version": "1.5.0",
   "description": "ScripterI/O - Simple, fast, runner for testing all JavaScript",
   "type": "module",
   "bin": {

@@ -2,6 +2,12 @@
 layout: default
 ---
 
+# Why ScripterI/O?
+
+ScripterI/O is a JavaScript testing framework designed to run on Node.js. It provides a simple and fast ESM (ECMAScript Module) runner for testing JavaScript code. The framework supports writing test cases using `test` and `describe` functions, organizing tests, and performing assertions with the expected function. It includes async/await support, test annotations, and context options for tags, timeout configurations and it focused on making testing easy and enjoyable for all.
+
+ScripterI/O is specifically designed with modern ECMAScript Modules (ESM) in mind, making it a better fit for ESM-based projects compared to older test runners.
+
 ## Getting started
 
 > **Before you follow the steps below, make sure that you have:**

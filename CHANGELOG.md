@@ -9,7 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Based on [Test Node.js version 22, 23, 24](https://github.com/scripterio-js/scripterio/issues/23):
   [Tested on: Node.js - v18, v20, v22, v23, v24](https://github.com/scripterio-js/scripterio/issues/23#issuecomment-2912376442)
-- Build a website https://scripterio-js.github.io/scripterio/
+- Built a website [scripterio](https://scripterio-js.github.io/scripterio/)
+  Documentation is now available on the [website](https://scripterio-js.github.io/scripterio/) to make it easier to use and configure ScripterI/O.
   *As long as sponsorship donations don't cover the cost of hosting, the site will remain on the GitHub domain*
 
 ## 1.6.0 - 2025-05-27

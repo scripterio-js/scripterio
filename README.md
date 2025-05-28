@@ -6,16 +6,21 @@
 <b>ScripterI/O - Simple, fast, dependency-free, ESM (ECMA script modules) runner for testing all JavaScript</b>
 </p>
 
-<p align="center">
+<h2>Links:</h2>
+
+<p align="left">
+  <a href="https://scripterio-js.github.io/scripterio/">Documentation</a> 
+</p>
+<p align="left">
   <a href="./CHANGELOG.md">Release Notes / History / Changes</a> 
 </p>
-<p align="center">
+<p align="left">
   <a href="./CONTRIBUTING.md">Contributing</a> 
 </p>
-<p align="center">
+<p align="left">
   <a href="https://github.com/VadimNastoyashchy/scripterio/issues">Issue Tracker</a> 
 </p>
-<p align="center">
+<p align="left">
   <a href="https://www.npmjs.com/package/scripterio">Link to NPM repository > scripterio</a> 
 </p>
 

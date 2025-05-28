@@ -1,23 +1,6 @@
-<p align="center">
-  <img src="assets/logo.png" height="200" border-radius="30px" alt="ScripterI/O  test framework logo"/>
-</p>
-
-<p align="center">
-<b>ScripterI/O - Simple, fast, dependency-free, ESM (ECMA script modules) runner for testing all JavaScript</b>
-</p>
-
-<p align="center">
-  <a href="./CHANGELOG.md">Release Notes / History / Changes</a> 
-</p>
-<p align="center">
-  <a href="./CONTRIBUTING.md">Contributing</a> 
-</p>
-<p align="center">
-  <a href="https://github.com/VadimNastoyashchy/scripterio/issues">Issue Tracker</a> 
-</p>
-<p align="center">
-  <a href="https://www.npmjs.com/package/scripterio">Link to NPM repository > scripterio</a> 
-</p>
+---
+layout: default
+---
 
 ## Getting started
 

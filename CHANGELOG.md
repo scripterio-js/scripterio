@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## Unreleased
+
+## 1.7.0 - 2025-05-28
 ### Added
 - Based on [Test Node.js version 22, 23, 24](https://github.com/scripterio-js/scripterio/issues/23):
   [Tested on: Node.js - v18, v20, v22, v23, v24](https://github.com/scripterio-js/scripterio/issues/23#issuecomment-2912376442)

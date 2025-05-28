@@ -36,8 +36,8 @@ Use the `test` function to write test cases and the `describe` function to group
 
 More examples:
 
-- https://github.com/scripterio-js/scripterio-example (Unit, API, E2E tests)
-- https://github.com/VadimNastoyashchy/json-mcp (Unit tests)
+- [https://github.com/scripterio-js/scripterio-example](https://github.com/scripterio-js/scripterio-example) (Unit, API, E2E tests)
+- [https://github.com/VadimNastoyashchy/json-mcp](https://github.com/VadimNastoyashchy/json-mcp) (Unit tests)
 
 Let's start by creating the `test.js` test file:
 
@@ -57,6 +57,7 @@ describe('Unit tests:', () => {
 ```
 
 ## Run test:
+---
 Specify the **--file=** argument as the path to your test file
 
 ```bash
@@ -76,7 +77,7 @@ yarn scripterio --folder="tests"
 
 
 
-## `Test runner API`
+## Test runner API
 
 ---
 
@@ -91,7 +92,7 @@ yarn scripterio --folder="tests"
 
 ---
 
-## `Assertions`
+## Assertions
 
 Use `expect(actual_value)` with assertions:
 
@@ -123,7 +124,7 @@ Use `expect(actual_value)` with assertions:
 
 ---
 
-## `Test annotations`
+## Test annotations
 
 `skip()`  Declares a skipped test or test group. Test/s is/are never run.
 
@@ -138,7 +139,7 @@ describe.skip('description', () => {})
 
 ---
 
-## `Context options`
+## Context options
 
 Use `{}` as the second parameter for describe and test functions.
 
@@ -200,7 +201,7 @@ npx scripterio --folder="tests" --tags="smoke,regression"
 ```
 ---
 
-## `Async/Await support`
+## Async/Await support
 
 Also supports async/await approach.
 To use it, just add `async` keyword before the function callback inside the `test` block:

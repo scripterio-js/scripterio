@@ -2,3 +2,25 @@
 ---
 
 @import 'jekyll-theme-cayman';
+
+/* Header Flex Layout for Logo + Content */
+.header-flex {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+
+.header-logo {
+  height: 64px;
+  width: auto;
+  border-radius: 16px;
+  margin-right: 1.5rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  background: #fff;
+}
+
+.header-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}

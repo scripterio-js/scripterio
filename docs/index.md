@@ -8,6 +8,12 @@ ScripterI/O is a JavaScript testing framework designed to run on Node.js. It pro
 
 ScripterI/O is specifically designed with modern ECMAScript Modules (ESM) in mind, making it a better fit for ESM-based projects compared to older test runners.
 
+## Demo
+
+<p align="center">
+  <img src="assets/demo.gif"  alt="ScripterI/O test runner"/>
+</p>
+
 ## Getting started
 
 > **Before you follow the steps below, make sure that you have:**
@@ -216,3 +222,27 @@ test('Wait 1 sec and check', async () => {
   expect(number).toBeDefined()
 })
 ```
+
+## Reporter
+ScripterI/O provides test reporting functionality with multiple reporter options:
+
+### HTML Reporter
+
+To generate an HTML report of your test results, use the `--reporter=html` flag:
+
+```js
+npx scripterio --file=test.js --reporter=html
+```
+
+This will create a detailed HTML report in the `scripterio-report` directory. The report includes:
+
+- Total test count, passed tests, and failed tests
+- Organized test results by file and test suites
+- Detailed error information for failed tests
+- Interactive UI to expand/collapse test suites
+
+Example of HTML reporter:
+
+<p align="center">
+  <img src="assets/reporter.png"  alt="ScripterI/O  html reporter"/>
+</p>

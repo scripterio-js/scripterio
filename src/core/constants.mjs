@@ -20,5 +20,11 @@ export const ARGS = {
   FILE: '--file=',
   FOLDER: '--folder=',
   TAGS: '--tags=',
+  REPORTER: '--reporter=',
   HELP: '--help',
+}
+
+export const REPORTERS = {
+  CONSOLE: 'console',
+  HTML: 'html',
 }

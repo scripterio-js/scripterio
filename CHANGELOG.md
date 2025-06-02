@@ -6,6 +6,21 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## Unreleased
+### Added
+- Based on [Add `results` object](https://github.com/scripterio-js/scripterio/issues/27) and [Add `HTML` reporter](https://github.com/scripterio-js/scripterio/issues/17):
+  - HTML reporter with `--reporter=html` flag that:
+    - Shows test files, test suites and test cases in a collapsible tree view
+    - Shows total number of tests, passed tests and failed tests
+    - Displays error details with stacktraces for failed tests
+    - Offers a clean, modern UI with improved readability
+    - Supports test file and test suite organization
+
+### Changed
+- Updated CLI help message
+- Updated documentation
+
+### Fixed
+- [`Website` - add correct page title](https://github.com/scripterio-js/scripterio/issues/37)
 
 ## 1.7.0 - 2025-05-28
 ### Added

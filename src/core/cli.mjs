@@ -1,4 +1,4 @@
-import { ARGS } from './constants.mjs'
+import { ARGS, REPORTERS } from './constants.mjs'
 import { printHelp, printError } from './output.mjs'
 
 const args = process.argv
@@ -40,4 +40,9 @@ export const getFolderNameFromArgs = () => {
 export const getTagsFromArgs = () => {
   const customArgPrefix = ARGS.TAGS
   return getCustomArgFromArgs(customArgPrefix) || ''
+}
+
+export const getReporterTypeFromArgs = () => {
+  const customArgPrefix = ARGS.REPORTER
+  return getCustomArgFromArgs(customArgPrefix) || REPORTERS.CONSOLE
 }

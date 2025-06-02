@@ -14,6 +14,8 @@ export const printHelp = () => {
       EOL +
       `${ARGS.TAGS}        <tags>  Tags to filter specific tests (e.g., unit,smoke)` +
       EOL +
+      `${ARGS.REPORTER}    <type>  Type of reporter (e.g., html)` +
+      EOL +
       '' +
       EOL +
       `${ARGS.HELP}                 Display help for command` +

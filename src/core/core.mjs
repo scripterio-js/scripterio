@@ -1,7 +1,7 @@
 import path from 'path'
 import fs from 'fs'
 import { applyColor, transformStackTrace } from '../utils/transform.mjs'
-import { runParsedBlocks } from '../core/context.mjs'
+import { runParsedBlocks, testFiles } from '../core/context.mjs'
 import { getConfig } from '../config/config.mjs'
 import { getMultipleFilePath } from '../config/setup.mjs'
 import { timeStamp } from '../utils/support.mjs'
@@ -12,6 +12,7 @@ import {
   printNewLine,
   printTags,
 } from './output.mjs'
+import { getReporter } from '../reporters/index.mjs'
 
 const config = getConfig()
 
@@ -38,6 +39,10 @@ const getTags = () => {
   return config.tags ? config.tags.split(',') : ''
 }
 
+const getReporterType = () => {
+  return config.reporter || ''
+}
+
 const chooseTestFiles = () =>
   hasSingleFile() ? getSingleFilePath() : getTestFiles()
 
@@ -49,6 +54,7 @@ export const run = async () => {
     await Promise.all(
       testFilePaths.map(async (testFilePath) => {
         printRunningTestFile(path.resolve(process.cwd(), testFilePath))
+        testFiles.push(testFilePath)
         await import(testFilePath)
       })
     )
@@ -58,6 +64,7 @@ export const run = async () => {
     printTestResult(failures, successes)
     const endTimeStamp = timeStamp()
     printExecutionTime(startTimeStamp, endTimeStamp)
+    await getReporter(getReporterType())
     process.exit(failures.length > 0 ? EXIT_CODES.failures : EXIT_CODES.ok)
   } catch (e) {
     console.error(e.message)

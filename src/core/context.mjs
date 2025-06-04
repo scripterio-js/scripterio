@@ -9,7 +9,7 @@ import {
 } from '../utils/transform.mjs'
 import { printNewLine, printSkippedMsg } from './output.mjs'
 
-export const report = []
+export const testFiles = []
 const failures = []
 let successes = 0
 let describeStack = []
@@ -19,6 +19,13 @@ let hasAfterAll = false
 let beforeAllStack = []
 let afterAllStack = []
 const defaultTimeout = 5_000
+
+export const result = {
+  numTests: 0,
+  numPassed: 0,
+  numFailed: 0,
+  results: [],
+}
 
 const makeDescribe = (name, options) => ({
   ...options,
@@ -125,10 +132,12 @@ const runTest = async (test) => {
     currentTest.errors.push(e)
   }
   if (currentTest.errors.length > 0) {
+    result.numFailed++
     console.log(indent(applyColor(`<red>✗</red> ${currentTest.name}`)))
     failures.push(currentTest)
   } else {
     successes++
+    result.numPassed++
     console.log(indent(applyColor(`<green>✓</green> ${currentTest.name}`)))
   }
   try {
@@ -136,7 +145,8 @@ const runTest = async (test) => {
   } catch (e) {
     console.error(e)
   }
-  report.push(currentTest)
+  result.numTests++
+  result.results.push(currentTest)
   global.currentTest = null
 }
 
@@ -183,7 +193,8 @@ export const runParsedBlocks = async (tags) => {
 
   const filteredBlocks = tags ? filterByTags(withFocus) : withFocus
 
-  for (let i = 0; i < filteredBlocks.children.length; ++i) {
+  for (let i = 0; i < testFiles.length; ++i) {
+    filteredBlocks.children[i].fileName = testFiles[i]
     await runBlock(filteredBlocks.children[i])
   }
   return { successes, failures }

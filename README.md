@@ -24,6 +24,12 @@
   <a href="https://www.npmjs.com/package/scripterio">Link to NPM repository > scripterio</a> 
 </p>
 
+## Demo
+
+<p align="center">
+  <img src="assets/demo.gif" alt="ScripterI/O  test framework logo"/>
+</p>
+
 ## Getting started
 
 > **Before you follow the steps below, make sure that you have:**
@@ -92,7 +98,7 @@ yarn scripterio --folder="tests"
 
 
 
-## `Test runner API`
+## Test runner API
 
 ---
 
@@ -107,7 +113,7 @@ yarn scripterio --folder="tests"
 
 ---
 
-## `Assertions`
+## Assertions
 
 Use `expect(actual_value)` with assertions:
 
@@ -139,7 +145,7 @@ Use `expect(actual_value)` with assertions:
 
 ---
 
-## `Test annotations`
+## Test annotations
 
 `skip()`  Declares a skipped test or test group. Test/s is/are never run.
 
@@ -154,7 +160,7 @@ describe.skip('description', () => {})
 
 ---
 
-## `Context options`
+## Context options
 
 Use `{}` as the second parameter for describe and test functions.
 
@@ -216,7 +222,7 @@ npx scripterio --folder="tests" --tags="smoke,regression"
 ```
 ---
 
-## `Async/Await support`
+## Async/Await support
 
 Also supports async/await approach.
 To use it, just add `async` keyword before the function callback inside the `test` block:
@@ -231,3 +237,27 @@ test('Wait 1 sec and check', async () => {
   expect(number).toBeDefined()
 })
 ```
+
+## Reporter
+ScripterI/O provides test reporting functionality with multiple reporter options:
+
+### HTML Reporter
+
+To generate an HTML report of your test results, use the `--reporter=html` flag:
+
+```bash
+npx scripterio --file=test.js --reporter=html
+```
+
+This will create a detailed HTML report in the `scripterio-report` directory. The report includes:
+
+- Total test count, passed tests, and failed tests
+- Organized test results by file and test suites
+- Detailed error information for failed tests
+- Interactive UI to expand/collapse test suites
+
+Example of HTML reporter:
+
+<p align="center">
+  <img src="assets/reporter.png" alt="ScripterI/O  html reporter"/>
+</p>

@@ -11,7 +11,7 @@
   },
   "types": "./src/index.d.ts",
   "scripts": {
-    "test": "src/runner.mjs --folder=__tests__",
+    "test": "src/runner.mjs --folder=__tests__ --reporter=html",
     "lint": "eslint \"**/*.{js,mjs}\" --ignore-pattern node_modules/ --fix",
     "prettier": "npx prettier --write ."
   },

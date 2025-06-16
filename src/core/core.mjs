@@ -1,7 +1,7 @@
 import path from 'path'
 import fs from 'fs'
 import { applyColor, transformStackTrace } from '../utils/transform.mjs'
-import { runParsedBlocks, testFiles } from '../core/context.mjs'
+import { runParsedBlocks } from '../core/context.mjs'
 import { getConfig } from '../config/config.mjs'
 import { getMultipleFilePath } from '../config/setup.mjs'
 import { timeStamp } from '../utils/support.mjs'
@@ -54,7 +54,6 @@ export const run = async () => {
     await Promise.all(
       testFilePaths.map(async (testFilePath) => {
         printRunningTestFile(path.resolve(process.cwd(), testFilePath))
-        testFiles.push(testFilePath)
         await import(testFilePath)
       })
     )

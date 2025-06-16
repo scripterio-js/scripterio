@@ -9,7 +9,6 @@ import {
 } from '../utils/transform.mjs'
 import { printNewLine, printSkippedMsg } from './output.mjs'
 
-export const testFiles = []
 const failures = []
 let successes = 0
 let describeStack = []
@@ -192,10 +191,9 @@ export const runParsedBlocks = async (tags) => {
   }
 
   const filteredBlocks = tags ? filterByTags(withFocus) : withFocus
-
-  for (let i = 0; i < testFiles.length; ++i) {
-    filteredBlocks.children[i].fileName = testFiles[i]
+  for (let i = 0; i < filteredBlocks.children.length; ++i) {
     await runBlock(filteredBlocks.children[i])
   }
+
   return { successes, failures }
 }

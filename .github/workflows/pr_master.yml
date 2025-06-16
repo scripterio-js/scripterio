@@ -4,7 +4,7 @@ on:
   push:
     branches: master
 jobs:
-  tests:
+  on_pull_request:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout

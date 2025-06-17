@@ -295,3 +295,119 @@ type Assertions = {
  * @param expected Expected value to check.
  */
 export function expect(expected: any): Assertions
+
+/**
+ * Represents the response object from a fetch request.
+ * This object contains the response data and utility methods to handle the response.
+ */
+export interface Response {
+  /** Boolean indicating if the response was successful (status in the range 200-299) */
+  ok: boolean;
+  /** The status code of the response (e.g., 200 for success, 404 for not found) */
+  status: number;
+  /** The status message associated with the status code */
+  statusText: string;
+  /** Indicates whether or not the response is the result of a redirect */
+  redirected: boolean;
+  /** The type of the response (e.g., 'basic', 'cors', 'error') */
+  type: string;
+  /** The URL of the response */
+  url: string;
+  /** The headers associated with the response */
+  headers: Headers;
+  /** Indicates whether the body has been read yet */
+  bodyUsed: boolean;
+  /** Returns a promise that resolves with an ArrayBuffer representation of the body */
+  arrayBuffer(): Promise<ArrayBuffer>;
+  /** Returns a promise that resolves with a Blob representation of the body */
+  blob(): Promise<Blob>;
+  /** Returns a promise that resolves with a FormData representation of the body */
+  formData(): Promise<FormData>;
+  /** Returns a promise that resolves with the result of parsing the body text as JSON */
+  json(): Promise<any>;
+  /** Returns a promise that resolves with the body text */
+  text(): Promise<string>;
+  /** Creates a clone of the response object */
+  clone(): Response;
+}
+
+/**
+ * HTTP client for making API requests
+ *
+ * **Usage**
+ * ```js
+ * // GET request
+ * const users = await request.get('https://api.example.com/users')
+ *
+ * // POST request
+ * const newUser = await request.post('https://api.example.com/users', {
+ *   name: 'John Doe',
+ *   email: 'john@example.com'
+ * })
+ *
+ * // PUT request
+ * const updatedUser = await request.put('https://api.example.com/users/1', {
+ *   name: 'John Updated'
+ * })
+ *
+ * // PATCH request
+ * const patchedUser = await request.patch('https://api.example.com/users/1', {
+ *   name: 'John Patched'
+ * })
+ *
+ * // DELETE request
+ * await request.delete('https://api.example.com/users/1')
+ * ```
+ */
+export const request: {
+  /**
+   * Sends a GET request to the specified URL and returns a Response object.
+   * 
+   * @param url - The URL to send the GET request to
+   * @param config - Optional request configuration
+   * @returns A promise that resolves to a Response object
+   * @example
+   * // Simple GET request with response handling
+   * const response = await request.get('https://api.example.com/users/1');
+   * if (response.ok) {
+   *   const data = await response.json();
+   *   console.log(data);
+   * }
+   *
+   * // GET request with custom headers
+   * const response = await request.get('https://api.example.com/users/1', {
+   *   headers: {
+   *     'Authorization': 'Bearer token123'
+   *   }
+   * });
+   */
+  get(url: string, config?: RequestInit): Promise<Response>;
+  
+  /**
+   * Sends a POST request with JSON body to the specified URL
+   * @param url The URL to send the POST request to
+   * @param config Optional request configuration
+   */
+  post(url: string, config?: RequestInit): Promise<Response>;
+  
+  /**
+   * Sends a PUT request with JSON body to the specified URL
+   * @param url The URL to send the PUT request to
+   * @param config Optional request configuration
+   */
+  put(url: string, config?: RequestInit): Promise<Response>;
+  
+  /**
+   * Sends a PATCH request with JSON body to the specified URL
+   * @param url The URL to send the PATCH request to
+   * @param config Optional request configuration
+   */
+  patch(url: string, config?: RequestInit): Promise<Response>;
+  
+  /**
+   * Sends a DELETE request to the specified URL
+   * @param url The URL to send the DELETE request to
+   * @param config Optional request configuration
+   */
+  delete(url: string, config?: RequestInit): Promise<Response>;
+};

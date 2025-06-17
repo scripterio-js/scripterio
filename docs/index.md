@@ -246,3 +246,41 @@ Example of HTML reporter:
 <p align="center">
   <img src="assets/reporter.png"  alt="ScripterI/O  html reporter"/>
 </p>
+
+## HTTP client
+
+ScripterI/O has built-in http client to preform the request.
+
+### `Example↓`
+
+test.js
+
+```js
+import { describe, test, expect} from 'scripterio'
+
+describe('Example of http client', () => {
+  test('Demonstrate get() method to get single object', async () => {
+    const response = await request.get('https://api.restful-api.dev/objects/7')
+    expect(response.status).toBeEqual(200)
+  })
+})
+```
+> *If you use the `request` object in your tests, the network details are automatically displayed in the HTML report!*
+
+<p align="center">
+  <img src="assets/api.png" alt="ScripterI/O  html reporter with api details"/>
+</p>
+
+## Request methods
+
+---
+
+| Option Name         | Description                                                             |
+| ------------------- | ----------------------------------------------------------------------- |
+| `request.get()`     | Sends a GET request to the specified URL and returns a Response object. |
+| `request.post()`    | Sends a POST request to the specified URL                               |
+| `request.put()`     | Sends a PUT request to the specified URL                                |
+| `request.patch()`   | Sends a PATCH request to the specified URL                              |
+| `request.delate()`  | Sends a DELETE request to the specified URL                             |
+
+>  Additional examples : [https://github.com/scripterio-js/scripterio-example/blob/main/tests/api_tests.j](https://github.com/scripterio-js/scripterio-example/blob/main/tests/api_tests.js)

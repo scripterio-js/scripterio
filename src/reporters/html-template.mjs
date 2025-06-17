@@ -2,6 +2,25 @@
 /* eslint-disable no-control-regex */
 const stripAnsi = (str) => str.replace(/(\x1b|\u001b)\[\d+(?:;\d+)*m/g, '')
 
+const escapeHtml = (str) => {
+  const htmlEntities = {
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#39;',
+  }
+  return String(str).replace(/[&<>"']/g, (char) => htmlEntities[char])
+}
+
+const formatJson = (data) => {
+  try {
+    return escapeHtml(JSON.stringify(data, null, 2))
+  } catch (e) {
+    return 'Unable to format data'
+  }
+}
+
 export const template = ({ numTests, numPassed, numFailed, results }) => {
   return `
 <!DOCTYPE html>
@@ -52,31 +71,6 @@ export const template = ({ numTests, numPassed, numFailed, results }) => {
     .stat.failed { background: #ffebee; }
     .stat h3 { margin: 0; }
     .stat p { margin: 0.5rem 0 0; font-size: 1.5rem; font-weight: bold; }
-    .file-group {
-      margin-bottom: 2rem;
-      border: 1px solid #eee;
-      border-radius: 6px;
-    }
-    .file-header {
-      padding: 1rem 1.5rem;
-      background: #f8f9fa;
-      font-weight: 600;
-      font-size: 1rem;
-      border-bottom: 1px solid #eee;
-      cursor: pointer;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .file-header:hover {
-      background: #f3f4f6;
-    }
-    .file-content {
-      display: block;
-    }
-    .file-content.hide {
-      display: none;
-    }
     .test-case {
       padding: 0.75rem 1rem;
       border-bottom: 1px solid #eee;
@@ -140,6 +134,58 @@ export const template = ({ numTests, numPassed, numFailed, results }) => {
     .describe-content.hide {
       display: none;
     }
+    .api-details {
+      margin-top: 1rem;
+      padding: 1rem;
+      background: #f8f9fa;
+      border-radius: 4px;
+      display: none;
+    }
+    .api-details.show {
+      display: block;
+    }
+    .toggle-api {
+      color: #2196f3;
+      text-decoration: underline;
+      cursor: pointer;
+      margin-top: 0.5rem;
+      display: inline-block;
+      margin-left: 1rem;
+    }
+    .api-section {
+      margin: 1rem 0;
+      padding: 1rem;
+      background: #fff;
+      border: 1px solid #e0e0e0;
+      border-radius: 4px;
+    }
+    .api-section h4 {
+      margin: 0 0 0.5rem 0;
+      color: #555;
+    }
+    .api-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 0.5rem 0;
+    }
+    .api-table th, .api-table td {
+      text-align: left;
+      padding: 0.5rem;
+      border: 1px solid #e0e0e0;
+    }
+    .api-table th {
+      background: #f3f4f6;
+      font-weight: 600;
+    }
+    pre.api-data {
+      margin: 0.5rem 0;
+      padding: 0.5rem;
+      background: #f5f5f5;
+      border-radius: 4px;
+      max-height: 200px;
+      overflow-y: auto;
+      white-space: pre-wrap;
+    }
   </style>
 </head>
 <body>
@@ -167,32 +213,11 @@ export const template = ({ numTests, numPassed, numFailed, results }) => {
     </div>
 
     <div class="results">
-      ${Object.entries(groupByFile(results))
-        .map(
-          ([file, tests]) => `
-        <div class="file-group">
-          <div class="file-header" onclick="toggleFileContent(this)">
-            ${file}
-            <span class="toggle-indicator">▼</span>
-          </div>
-          <div class="file-content">
-            ${renderDescribeGroup(groupByDescribe(tests))}
-          </div>
-        </div>
-      `
-        )
-        .join('')}
+        ${renderDescribeGroup(groupByDescribe(results))}
     </div>
   </div>
 
   <script>
-    function toggleFileContent(element) {
-      const content = element.nextElementSibling;
-      const indicator = element.querySelector('.toggle-indicator');
-      content.classList.toggle('hide');
-      indicator.textContent = content.classList.contains('hide') ? '▶' : '▼';
-    }
-
     function toggleDescribeContent(element) {
       const content = element.nextElementSibling;
       content.classList.toggle('hide');
@@ -205,17 +230,85 @@ export const template = ({ numTests, numPassed, numFailed, results }) => {
       element.textContent = isShowing ? 'Show error details' : 'Hide error details';
     }
 
+    function toggleApiDetails(element) {
+      const details = element.nextElementSibling;
+      const isShowing = details.classList.contains('show');
+      details.classList.toggle('show');
+      element.textContent = isShowing ? 'Show API details' : 'Hide API details';
+    }
+
     document.addEventListener('DOMContentLoaded', () => {
-      // All groups are shown by default now, no need to manually show them
       const failedTests = document.querySelectorAll('.test-name.failed');
       failedTests.forEach(test => {
-        // Remove the auto-opening logic since everything is open by default
       });
     });
   </script>
 </body>
 </html>
 `
+
+  function renderApiDetails(apiDetails) {
+    if (!apiDetails || apiDetails.length === 0) return ''
+
+    return `
+      <a class="toggle-api" onclick="toggleApiDetails(this)">Show API details</a>
+      <div class="api-details">
+        ${apiDetails
+          .map(
+            (api, index) => `
+          <div class="api-section">
+            <h4>API Call ${index + 1}</h4>
+            <div class="request-details">
+              <h4>Request</h4>
+              <table class="api-table">
+                <tr>
+                  <th>URL</th>
+                  <td>${escapeHtml(api.request.url)}</td>
+                </tr>
+                <tr>
+                  <th>Method</th>
+                  <td>${escapeHtml(api.request.method)}</td>
+                </tr>
+              </table>
+              <h4>Headers</h4>
+              <pre class="api-data">${formatJson(api.request.headers)}</pre>
+              ${
+                api.request.body
+                  ? `
+                <h4>Body</h4>
+                <pre class="api-data">${formatJson(api.request.body)}</pre>
+              `
+                  : ''
+              }
+            </div>
+            <div class="response-details">
+              <h4>Response</h4>
+              <table class="api-table">
+                <tr>
+                  <th>Status</th>
+                  <td>${escapeHtml(api.response.status)} ${escapeHtml(
+                    api.response.statusText
+                  )}</td>
+                </tr>
+              </table>
+              <h4>Headers</h4>
+              <pre class="api-data">${formatJson(api.response.headers)}</pre>
+              ${
+                api.response.data
+                  ? `
+                <h4>Data</h4>
+                <pre class="api-data">${formatJson(api.response.data)}</pre>
+              `
+                  : ''
+              }
+            </div>
+          </div>
+        `
+          )
+          .join('')}
+      </div>
+    `
+  }
 
   function renderDescribeGroup(group, level = 0) {
     const padding = level * 20
@@ -251,6 +344,7 @@ export const template = ({ numTests, numPassed, numFailed, results }) => {
               `
                   : ''
               }
+              ${test.apiDetails ? renderApiDetails(test.apiDetails) : ''}
             </div>
           `
             )
@@ -267,17 +361,6 @@ export const template = ({ numTests, numPassed, numFailed, results }) => {
         `
       })
       .join('')
-  }
-
-  function groupByFile(results) {
-    return results.reduce((acc, result) => {
-      const filePath = result.describeStack[0]?.fileName || 'Unknown file'
-      if (!acc[filePath]) {
-        acc[filePath] = []
-      }
-      acc[filePath].push(result)
-      return acc
-    }, {})
   }
 
   function groupByDescribe(tests) {

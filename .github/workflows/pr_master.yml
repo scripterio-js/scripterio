@@ -4,7 +4,7 @@ on:
   push:
     branches: master
 jobs:
-  tests:
+  on_pull_request:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -15,11 +15,11 @@ jobs:
           node-version: '18'
       - name: Install dependencies
         run: npm install
-      - name: Lint
+      - name: Lint checks
         run: npm run lint
-      - name: Prettier
+      - name: Prettier checks
         run: npm run prettier
-      - name: Unit test
+      - name: Unit tests
         run: npm test
 
       - name: Upload E2E Test Report Artifact

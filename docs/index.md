@@ -281,6 +281,6 @@ describe('Example of http client', () => {
 | `request.post()`    | Sends a POST request to the specified URL                               |
 | `request.put()`     | Sends a PUT request to the specified URL                                |
 | `request.patch()`   | Sends a PATCH request to the specified URL                              |
-| `request.delate()`  | Sends a DELETE request to the specified URL                             |
+| `request.delete()`  | Sends a DELETE request to the specified URL                             |
 
 >  Additional examples : [https://github.com/scripterio-js/scripterio-example/blob/main/tests/api_tests.j](https://github.com/scripterio-js/scripterio-example/blob/main/tests/api_tests.js)

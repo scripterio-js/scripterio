@@ -11,7 +11,7 @@ const BASE_ENDPOINT = 'https://api.restful-api.dev/objects'
 let preparedData
 
 const cleanData = async (id) => {
-  return await request.delate(`${BASE_ENDPOINT}/${id}`)
+  return await request.delete(`${BASE_ENDPOINT}/${id}`)
 }
 
 const createData = async () => {

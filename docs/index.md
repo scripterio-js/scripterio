@@ -256,7 +256,7 @@ ScripterI/O has built-in http client to preform the request.
 test.js
 
 ```js
-import { describe, test, expect} from 'scripterio'
+import { describe, test, expect, request} from 'scripterio'
 
 describe('Example of http client', () => {
   test('Demonstrate get() method to get single object', async () => {

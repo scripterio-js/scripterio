@@ -336,4 +336,4 @@ request.patch = (url, body, config) => requestCore.patch(url, body, config)
  *   }
  * })
  */
-request.delate = (url, config) => requestCore.del(url, config)
+request.delete = (url, config) => requestCore.del(url, config)

@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## 1.9.1 - 2025-06-19
+
 ## 1.9.0 - 2025-06-17
 ### Added
 - Based on [Add new `request` object to interact within REST API](https://github.com/scripterio-js/scripterio/issues/40):

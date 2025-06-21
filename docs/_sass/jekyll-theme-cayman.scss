@@ -79,7 +79,7 @@ a {
     border-color: rgba(255, 255, 255, 0.3);
   }
 
-  + .btn {
+  +.btn {
     margin-left: 1rem;
   }
 
@@ -98,7 +98,7 @@ a {
     padding: 0.75rem;
     font-size: 0.9rem;
 
-    + .btn {
+    +.btn {
       margin-top: 1rem;
       margin-left: 0;
     }
@@ -181,7 +181,7 @@ a {
     padding: 2rem 1rem;
     font-size: 1rem;
   }
-  
+
   kbd {
     background-color: #fafbfc;
     border: 1px solid #c6cbd1;
@@ -236,7 +236,7 @@ a {
     border: solid 1px $border-color;
     border-radius: 0.3rem;
 
-    > code {
+    >code {
       padding: 0;
       margin: 0;
       font-size: 0.9rem;
@@ -374,4 +374,58 @@ a {
 
 .site-footer-credits {
   color: $blockquote-text-color;
+}
+
+.content-wrapper {
+  display: flex;
+  width: 100%;
+}
+
+.side-navigation {
+  position: sticky;
+  top: 50px;
+  left: 20px;
+  width: 300px;
+  padding: 10px;
+  background-color: #f9f9f9;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  max-height: calc(100vh - 120px);
+  overflow-y: auto;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.side-navigation ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.side-navigation ul li {
+  margin-bottom: 8px;
+}
+
+.side-navigation ul li a {
+  display: block;
+  padding: 5px 10px;
+  text-decoration: none;
+  color: #333;
+  font-size: 14px;
+  border-radius: 4px;
+  transition: all 0.3s ease;
+}
+
+.side-navigation ul li a.active {
+  background-color: #159957;
+  color: #fff;
+  font-weight: bold;
+}
+
+.sub-content-wrapper {
+  display: flex;
+  column-gap: 50px;
+}
+
+h2 {
+  margin-top: 100px;
 }

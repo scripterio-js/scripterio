@@ -22,6 +22,7 @@ export const ARGS = {
   TAGS: '--tags=',
   REPORTER: '--reporter=',
   RETRY: '--retry=',
+  TIMEOUT: '--timeout=',
   HELP: '--help',
 }
 

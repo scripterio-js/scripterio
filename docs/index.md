@@ -167,6 +167,16 @@ Use `{}` as the second parameter for describe and test functions.
 
 ### `Timeout example↓`
 
+#### To specify globally for all tests, use the following CLI flag:
+
+```bash
+npx scripterio --file="test.js" --timeout=30000
+# or
+npx scripterio --folder="tests" --timeout=20_000
+```
+
+#### To specify individual tests, use the context option:
+
 ```js
 test('Wait 1 sec and check', { timeout: 2000}, async () => {
   const number = await new Promise((resolve) =>

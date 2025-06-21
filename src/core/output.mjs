@@ -4,23 +4,25 @@ import { applyColor } from '../utils/transform.mjs'
 
 export const printHelp = () => {
   console.log(
-    'Available CLI options: ' +
+    'Available CLI options:' +
       EOL +
       '' +
       EOL +
-      `${ARGS.FILE}        <path>  Path to your test file (e.g., test.js)` +
+      `${ARGS.FILE}        <path>   Path to a test file (e.g., test.js)` +
       EOL +
-      `${ARGS.FOLDER}      <path>  Path to your tests directory (e.g., tests)` +
+      `${ARGS.FOLDER}      <path>   Path to a tests directory (e.g., tests/)` +
       EOL +
-      `${ARGS.TAGS}        <tags>  Tags to filter specific tests (e.g., unit,smoke)` +
+      `${ARGS.TAGS}        <tags>   Comma-separated tags to filter tests (e.g., unit,smoke)` +
       EOL +
-      `${ARGS.REPORTER}    <type>  Type of reporter (e.g., html)` +
+      `${ARGS.REPORTER}    <type>   Reporter type (e.g., html, console)` +
       EOL +
-      `${ARGS.RETRY}       <num>   Number of test retries` +
+      `${ARGS.RETRY}       <num>    Number of retries for failed tests (e.g., 2)` +
+      EOL +
+      `${ARGS.TIMEOUT}     <ms>     Timeout for a test in milliseconds (e.g., 5000)` +
       EOL +
       '' +
       EOL +
-      `${ARGS.HELP}                 Display help for command` +
+      `${ARGS.HELP}                 Display this help message` +
       EOL +
       ''
   )

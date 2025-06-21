@@ -10,7 +10,9 @@ import {
 import { printNewLine, printSkippedMsg } from './output.mjs'
 import { getConfig } from '../config/config.mjs'
 
+const config = getConfig()
 const failures = []
+const defaultTimeout = config.timeout || 5_000
 let successes = 0
 let describeStack = []
 let currentDescribe
@@ -18,7 +20,6 @@ let hasBeforeAll = false
 let hasAfterAll = false
 let beforeAllStack = []
 let afterAllStack = []
-const defaultTimeout = 5_000
 
 export const result = {
   numTests: 0,
@@ -41,7 +42,7 @@ const makeTest = (name, body, timeout = defaultTimeout, tags = [], retry) => ({
   errors: [],
   timeout: new TimeoutError(timeout),
   tags: Array.isArray(tags) ? tags : [tags],
-  retry: retry || getConfig().retry,
+  retry: retry || config.retry,
 })
 
 currentDescribe = makeDescribe('root')

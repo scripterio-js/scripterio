@@ -46,3 +46,8 @@ export const getReporterTypeFromArgs = () => {
   const customArgPrefix = ARGS.REPORTER
   return getCustomArgFromArgs(customArgPrefix) || REPORTERS.CONSOLE
 }
+
+export const getRetryFromArgs = () => {
+  const customArgPrefix = ARGS.RETRY
+  return getCustomArgFromArgs(customArgPrefix) || ''
+}

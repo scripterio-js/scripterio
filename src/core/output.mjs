@@ -16,6 +16,8 @@ export const printHelp = () => {
       EOL +
       `${ARGS.REPORTER}    <type>  Type of reporter (e.g., html)` +
       EOL +
+      `${ARGS.RETRY}       <num>   Number of test retries` +
+      EOL +
       '' +
       EOL +
       `${ARGS.HELP}                 Display help for command` +

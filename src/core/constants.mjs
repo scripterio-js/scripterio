@@ -21,6 +21,7 @@ export const ARGS = {
   FOLDER: '--folder=',
   TAGS: '--tags=',
   REPORTER: '--reporter=',
+  RETRY: '--retry=',
   HELP: '--help',
 }
 

@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 ### Added
+- Based on [Add test `retry` logic](https://github.com/scripterio-js/scripterio/issues/30):
+  - Retry functionality for tests:
+    - Global retry option via CLI flag (`--retry`)
+    - Per-test retry option via context option (`{ retry: n }`)
 - Based on [`Website` - add navigation](https://github.com/scripterio-js/scripterio/issues/39):
   - Added a `side navigation menu` to enhance usability and improve user experience when navigating website sections. 
 - Contributors:

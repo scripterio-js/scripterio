@@ -1,55 +1,52 @@
-document.addEventListener("DOMContentLoaded", function () {
-  const links = document.querySelectorAll(".side-navigation ul li a");
+document.addEventListener('DOMContentLoaded', function () {
+  const links = document.querySelectorAll('.side-navigation ul li a')
 
-  function highlightActiveSection() {
-    let fromTop = window.scrollY;
+  function highlightActiveSection () {
+    const fromTop = window.scrollY
 
-    links.forEach(link => {
-      const section = document.querySelector(link.getAttribute("href"));
-      const links = document.querySelectorAll(".side-navigation ul li a");
-      const isAtBottom = window.innerHeight + window.scrollY >= document.body.scrollHeight - 5;
-      console.log(isAtBottom);
+    links.forEach((link) => {
+      const section = document.querySelector(link.getAttribute('href'))
+      const links = document.querySelectorAll('.side-navigation ul li a')
+      const isAtBottom =
+        window.innerHeight + window.scrollY >= document.body.scrollHeight - 5
       if (isAtBottom) {
         for (const link of links) {
-          link.classList.remove("active");
+          link.classList.remove('active')
         }
-        links[links.length - 1].classList.add("active");
-        return;
+        links[links.length - 1].classList.add('active')
+        return
       }
 
-      if (
-        fromTop + 10 > section.offsetTop
-      ) {
-
+      if (fromTop + 10 > section.offsetTop) {
         for (const link of links) {
-          link.classList.remove("active");
+          link.classList.remove('active')
         }
 
-        link.classList.add("active");
+        link.classList.add('active')
       }
-    });
+    })
   }
 
-  function smoothScroll(event) {
-    event.preventDefault();
-    const targetId = this.getAttribute("href");
-    const targetSection = document.querySelector(targetId);
+  function smoothScroll (event) {
+    event.preventDefault()
+    const targetId = this.getAttribute('href')
+    const targetSection = document.querySelector(targetId)
 
     if (targetSection) {
       targetSection.scrollIntoView({
-        block: "start",
+        block: 'start',
         smoothScroll: true,
-      });
+      })
     }
   }
 
-  links.forEach(link => {
-    link.addEventListener("click", smoothScroll);
-  });
+  links.forEach((link) => {
+    link.addEventListener('click', smoothScroll)
+  })
 
-  window.addEventListener("scroll", () => {
+  window.addEventListener('scroll', () => {
     highlightActiveSection()
-  });
+  })
 
-  highlightActiveSection();
-});
+  highlightActiveSection()
+})

@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Unreleased
 ### Added
 - Based on [`Website` - add navigation](https://github.com/scripterio-js/scripterio/issues/39):
-  - Added `side navigation menu` to enhance usability and improve user experience for navigating through sections website. 
+  - Added a `side navigation menu` to enhance usability and improve user experience when navigating website sections. 
 - Contributors:
   - [Vadym Nastoiashchyi](https://github.com/VadimNastoyashchy)
   - [Oleh Babenko](https://github.com/OlehBabenkoo)

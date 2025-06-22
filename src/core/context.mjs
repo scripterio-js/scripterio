@@ -8,8 +8,11 @@ import {
   withoutLast,
 } from '../utils/transform.mjs'
 import { printNewLine, printSkippedMsg } from './output.mjs'
+import { getConfig } from '../config/config.mjs'
 
+const config = getConfig()
 const failures = []
+const defaultTimeout = config.timeout || 5_000
 let successes = 0
 let describeStack = []
 let currentDescribe
@@ -17,7 +20,6 @@ let hasBeforeAll = false
 let hasAfterAll = false
 let beforeAllStack = []
 let afterAllStack = []
-const defaultTimeout = 5_000
 
 export const result = {
   numTests: 0,
@@ -34,12 +36,13 @@ const makeDescribe = (name, options) => ({
   children: [],
 })
 
-const makeTest = (name, body, timeout = defaultTimeout, tags = []) => ({
+const makeTest = (name, body, timeout = defaultTimeout, tags = [], retry) => ({
   name,
   body,
   errors: [],
   timeout: new TimeoutError(timeout),
   tags: Array.isArray(tags) ? tags : [tags],
+  retry: retry || config.retry,
 })
 
 currentDescribe = makeDescribe('root')
@@ -63,7 +66,7 @@ export const test = (name, optionsOrBody, body) => {
     ...currentDescribe,
     children: [
       ...currentDescribe.children,
-      makeTest(name, actualBody, options.timeout, options.tags),
+      makeTest(name, actualBody, options.timeout, options.tags, options.retry),
     ],
   }
 }
@@ -122,15 +125,37 @@ const runBodyAndWait = async (body) => {
 }
 
 const runTest = async (test) => {
+  let attempts = 0
+  const maxRetries = test.retry || 0
+  let passed = false
   global.currentTest = test
   currentTest.describeStack = [...describeStack]
-  try {
-    await invokeBeforeEach(currentTest)
-    await runBodyAndWait(currentTest.body)
-  } catch (e) {
-    currentTest.errors.push(e)
+  while (attempts <= maxRetries && !passed) {
+    if (attempts > 0) {
+      console.log(
+        indent(
+          applyColor(
+            `<yellow>↻ Retry #${attempts}</yellow> ${currentTest.name}`
+          )
+        )
+      )
+      currentTest.errors = []
+    }
+    try {
+      await invokeBeforeEach(currentTest)
+      await runBodyAndWait(currentTest.body)
+    } catch (e) {
+      currentTest.errors.push(e)
+    }
+    passed = currentTest.errors.length === 0
+    try {
+      await invokeAfterEach(currentTest)
+    } catch (e) {
+      console.error(e)
+    }
+    attempts++
   }
-  if (currentTest.errors.length > 0) {
+  if (!passed) {
     result.numFailed++
     console.log(indent(applyColor(`<red>✗</red> ${currentTest.name}`)))
     failures.push(currentTest)
@@ -138,11 +163,6 @@ const runTest = async (test) => {
     successes++
     result.numPassed++
     console.log(indent(applyColor(`<green>✓</green> ${currentTest.name}`)))
-  }
-  try {
-    await invokeAfterEach(currentTest)
-  } catch (e) {
-    console.error(e)
   }
   result.numTests++
   result.results.push(currentTest)

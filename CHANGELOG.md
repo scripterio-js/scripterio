@@ -6,6 +6,23 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## Unreleased
+### Added
+- Based on [Add test `retry` logic](https://github.com/scripterio-js/scripterio/issues/30):
+  - Retry functionality for tests:
+    - Global retry option via CLI flag (`--retry`)
+    - Per-test retry option via context option (`{ retry: n }`)
+- Based on [Add `--timeout` CLI option](https://github.com/scripterio-js/scripterio/issues/22):
+    - Global timeout option via CLI flag (`--timeout`)
+- Based on [`Website` - add navigation](https://github.com/scripterio-js/scripterio/issues/39):
+  - Added a `side navigation menu` to enhance usability and improve user experience when navigating website sections. 
+- Contributors:
+  - [Vadym Nastoiashchyi](https://github.com/VadimNastoyashchy)
+  - [Oleh Babenko](https://github.com/OlehBabenkoo)
+
+### Changed
+- Updated CLI help message
+- Updated documentation
+- Refactored core components
 
 ## 1.9.1 - 2025-06-19
 

@@ -159,8 +159,23 @@ Use `{}` as the second parameter for describe and test functions.
 |                     | when declaring a test.                                                  |
 |                     | You can also tag all tests in a group or provide multiple tags:         |
 |                     | `{ tags: ['smoke', 'regression'] }`                                     |
+| `{ retry: 2 }`      | To specify how many times a failed test should be retried               |
+|                     | before being marked as failed                                           |
+|                     | If a test fails, it will be retried up to the specified number of times |
+|                     | If the test passes on any retry, it is marked as passed                 |
+|                     | If it fails all attempts, it is marked as failed                        |
 
 ### `Timeout example↓`
+
+#### To specify globally for all tests, use the following CLI flag:
+
+```bash
+npx scripterio --file="test.js" --timeout=30000
+# or
+npx scripterio --folder="tests" --timeout=20_000
+```
+
+#### To specify individual tests, use the context option:
 
 ```js
 test('Wait 1 sec and check', { timeout: 2000}, async () => {
@@ -205,6 +220,27 @@ You can now run tests that have tags separated by `,` (comma) with `--tags` comm
 ```bash
 npx scripterio --folder="tests" --tags="smoke,regression"
 ```
+
+### `Retry example↓`
+
+#### To specify globally for all tests, use the following CLI flag:
+
+```bash
+npx scripterio --file="test.js" --retry=2
+# or
+npx scripterio --folder="tests" --retry=3
+```
+
+#### To specify individual tests, use the context option:
+
+```js
+test('Flaky test', { retry: 2 }, () => {
+  // Your test code that might fail intermittently
+})
+```
+
+This will retry the test up to 2 additional times if it fails.
+
 ---
 
 ## Async/Await support

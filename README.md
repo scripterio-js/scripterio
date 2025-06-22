@@ -1,28 +1,39 @@
 <p align="center">
-  <img src="assets/logo.png" height="200" border-radius="30px" alt="ScripterI/O  test framework logo"/>
+  <img src="assets/logo.png" height="200" style="border-radius:30px;" alt="ScripterI/O test framework logo"/>
 </p>
+
+<h1 align="center">ScripterI/O</h1>
 
 <p align="center">
-<b>ScripterI/O - Simple, fast, dependency-free, ESM (ECMA script modules) runner for testing all JavaScript</b>
+  <b>Simple, fast, dependency-free ESM (ECMAScript Modules) test runner for JavaScript</b>
 </p>
 
-<h2>Links:</h2>
+## Links
 
-<p align="left">
-  <a href="https://scripterio-js.github.io/scripterio/">Documentation</a> 
-</p>
-<p align="left">
-  <a href="./CHANGELOG.md">Release Notes / History / Changes</a> 
-</p>
-<p align="left">
-  <a href="./CONTRIBUTING.md">Contributing</a> 
-</p>
-<p align="left">
-  <a href="https://github.com/VadimNastoyashchy/scripterio/issues">Issue Tracker</a> 
-</p>
-<p align="left">
-  <a href="https://www.npmjs.com/package/scripterio">Link to NPM repository > scripterio</a> 
-</p>
+- [Documentation](https://scripterio-js.github.io/scripterio/)
+- [Release Notes / History / Changes](./CHANGELOG.md)
+- [Contributing](./CONTRIBUTING.md)
+- [Issue Tracker](https://github.com/VadimNastoyashchy/scripterio/issues)
+- [NPM Package](https://www.npmjs.com/package/scripterio)
+
+---
+
+## Table of Contents
+
+- [Getting Started](#getting-started)
+  - [Installation](#installation)
+  - [Writing Tests](#writing-tests)
+  - [Running Tests](#running-tests)
+- [Test Runner API](#test-runner-api)
+  - [Assertions](#assertions)
+  - [Test Annotations](#test-annotations)
+  - [Context Options](#context-options)
+- [Async/Await Support](#asyncawait-support)
+- [Reporter](#reporter)
+- [HTTP Client](#http-client)
+  - [Request Methods](#request-methods)
+
+---
 
 ## Demo
 
@@ -174,8 +185,23 @@ Use `{}` as the second parameter for describe and test functions.
 |                     | when declaring a test.                                                  |
 |                     | You can also tag all tests in a group or provide multiple tags:         |
 |                     | `{ tags: ['smoke', 'regression'] }`                                     |
+| `{ retry: 2 }`      | To specify how many times a failed test should be retried               |
+|                     | before being marked as failed                                           |
+|                     | If a test fails, it will be retried up to the specified number of times |
+|                     | If the test passes on any retry, it is marked as passed                 |
+|                     | If it fails all attempts, it is marked as failed                        |
 
 ### `Timeout example↓`
+
+#### To specify globally for all tests, use the following CLI flag:
+
+```bash
+npx scripterio --file="test.js" --timeout=30000
+# or
+npx scripterio --folder="tests" --timeout=20_000
+```
+
+#### To specify individual tests, use the context option:
 
 ```js
 test('Wait 1 sec and check', { timeout: 2000}, async () => {
@@ -220,6 +246,27 @@ You can now run tests that have tags separated by `,` (comma) with `--tags` comm
 ```bash
 npx scripterio --folder="tests" --tags="smoke,regression"
 ```
+
+### `Retry example↓`
+
+#### To specify globally for all tests, use the following CLI flag:
+
+```bash
+npx scripterio --file="test.js" --retry=2
+# or
+npx scripterio --folder="tests" --retry=3
+```
+
+#### To specify individual tests, use the context option:
+
+```js
+test('Flaky test', { retry: 2 }, () => {
+  // Your test code that might fail intermittently
+})
+```
+
+This will retry the test up to 2 additional times if it fails.
+
 ---
 
 ## Async/Await support

@@ -27,22 +27,13 @@ const getCustomArgFromArgs = (customArgPrefix) => {
   return customArgValue
 }
 
-export const getFileNameFromArgs = () => {
-  const customArgPrefix = ARGS.FILE
-  return getCustomArgFromArgs(customArgPrefix) || ''
-}
+const getArgValue = (argKey, defaultValue = '') =>
+  getCustomArgFromArgs(argKey) || defaultValue
 
-export const getFolderNameFromArgs = () => {
-  const customArgPrefix = ARGS.FOLDER
-  return getCustomArgFromArgs(customArgPrefix) || ''
-}
-
-export const getTagsFromArgs = () => {
-  const customArgPrefix = ARGS.TAGS
-  return getCustomArgFromArgs(customArgPrefix) || ''
-}
-
-export const getReporterTypeFromArgs = () => {
-  const customArgPrefix = ARGS.REPORTER
-  return getCustomArgFromArgs(customArgPrefix) || REPORTERS.CONSOLE
-}
+export const getFileNameFromArgs = () => getArgValue(ARGS.FILE)
+export const getFolderNameFromArgs = () => getArgValue(ARGS.FOLDER)
+export const getTagsFromArgs = () => getArgValue(ARGS.TAGS)
+export const getReporterTypeFromArgs = () =>
+  getArgValue(ARGS.REPORTER, REPORTERS.CONSOLE)
+export const getRetryFromArgs = () => getArgValue(ARGS.RETRY)
+export const getTimeoutFromArgs = () => getArgValue(ARGS.TIMEOUT)

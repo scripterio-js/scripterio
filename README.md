@@ -1,28 +1,39 @@
 <p align="center">
-  <img src="assets/logo.png" height="200" border-radius="30px" alt="ScripterI/O  test framework logo"/>
+  <img src="assets/logo.png" height="200" style="border-radius:30px;" alt="ScripterI/O test framework logo"/>
 </p>
+
+<h1 align="center">ScripterI/O</h1>
 
 <p align="center">
-<b>ScripterI/O - Simple, fast, dependency-free, ESM (ECMA script modules) runner for testing all JavaScript</b>
+  <b>Simple, fast, dependency-free ESM (ECMAScript Modules) test runner for JavaScript</b>
 </p>
 
-<h2>Links:</h2>
+## Links
 
-<p align="left">
-  <a href="https://scripterio-js.github.io/scripterio/">Documentation</a> 
-</p>
-<p align="left">
-  <a href="./CHANGELOG.md">Release Notes / History / Changes</a> 
-</p>
-<p align="left">
-  <a href="./CONTRIBUTING.md">Contributing</a> 
-</p>
-<p align="left">
-  <a href="https://github.com/VadimNastoyashchy/scripterio/issues">Issue Tracker</a> 
-</p>
-<p align="left">
-  <a href="https://www.npmjs.com/package/scripterio">Link to NPM repository > scripterio</a> 
-</p>
+- [Documentation](https://scripterio-js.github.io/scripterio/)
+- [Release Notes / History / Changes](./CHANGELOG.md)
+- [Contributing](./CONTRIBUTING.md)
+- [Issue Tracker](https://github.com/VadimNastoyashchy/scripterio/issues)
+- [NPM Package](https://www.npmjs.com/package/scripterio)
+
+---
+
+## Table of Contents
+
+- [Getting Started](#getting-started)
+  - [Installation](#installation)
+  - [Writing Tests](#writing-tests)
+  - [Running Tests](#running-tests)
+- [Test Runner API](#test-runner-api)
+  - [Assertions](#assertions)
+  - [Test Annotations](#test-annotations)
+  - [Context Options](#context-options)
+- [Async/Await Support](#asyncawait-support)
+- [Reporter](#reporter)
+- [HTTP Client](#http-client)
+  - [Request Methods](#request-methods)
+
+---
 
 ## Demo
 

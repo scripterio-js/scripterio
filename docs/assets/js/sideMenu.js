@@ -6,7 +6,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
     links.forEach((link) => {
       const section = document.querySelector(link.getAttribute('href'))
-      const links = document.querySelectorAll('.side-navigation ul li a')
       const isAtBottom =
         window.innerHeight + window.scrollY >= document.body.scrollHeight - 5
       if (isAtBottom) {

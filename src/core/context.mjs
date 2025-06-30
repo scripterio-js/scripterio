@@ -59,6 +59,18 @@ export const describe = (name, optionsOrBody, body) => {
   }
 }
 
+describe.only = (name, optionsOrBody, body) => {
+  const options = typeof optionsOrBody === 'object' ? optionsOrBody : {}
+  const actualBody = typeof optionsOrBody === 'function' ? optionsOrBody : body
+  const parentDescribe = currentDescribe
+  currentDescribe = makeDescribe(name, { ...options, focus: true })
+  actualBody()
+  currentDescribe = {
+    ...parentDescribe,
+    children: [...parentDescribe.children, currentDescribe],
+  }
+}
+
 export const test = (name, optionsOrBody, body) => {
   const options = typeof optionsOrBody === 'object' ? optionsOrBody : {}
   const actualBody = typeof optionsOrBody === 'function' ? optionsOrBody : body
@@ -67,6 +79,18 @@ export const test = (name, optionsOrBody, body) => {
     children: [
       ...currentDescribe.children,
       makeTest(name, actualBody, options.timeout, options.tags, options.retry),
+    ],
+  }
+}
+
+test.only = (name, optionsOrBody, body) => {
+  const options = typeof optionsOrBody === 'object' ? optionsOrBody : {}
+  const actualBody = typeof optionsOrBody === 'function' ? optionsOrBody : body
+  currentDescribe = {
+    ...currentDescribe,
+    children: [
+      ...currentDescribe.children,
+      { ...makeTest(name, actualBody, options.timeout, options.tags, options.retry), focus: true },
     ],
   }
 }

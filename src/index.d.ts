@@ -70,6 +70,37 @@ type Options = {
    * @param callback A callback that is run immediately when calling test(name, optionsOrBody, callback)
    */
   skip(name: string, optionsOrBody: {}, body: {}): void
+    /**
+   * Declares an exclusive test group.
+   * Only the tests in this group are run, and all other tests are skipped.
+   * - `describe.only(title)`
+   * - `describe.only(title, details, callback)`
+   * - `test.only(title, callback)`
+   *
+   * **Usage**
+   *
+   * ```js
+   * describe.only('focused group', () => {
+   *   test('example', () => {
+   *     // This test will run
+   *   });
+   * });
+   * ```
+   * or
+   *
+   * ```js
+   * describe('example', () => {
+   *   test.only('focused test', () => {
+   *     // This test will run
+   *   });
+   * });
+   * ```
+   *
+   * @param name Test title.
+   * @param optionsOrBody (Optional) Object with options
+   * @param callback A callback that is run immediately when calling test(name, optionsOrBody, callback)
+   */
+  only(name: string, optionsOrBody?: {}, body?: {}): void;
 }
 /**
  * Execute before each test case.

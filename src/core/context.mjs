@@ -25,7 +25,6 @@ export const result = {
   numTests: 0,
   numPassed: 0,
   numFailed: 0,
-  numSkipped: 0,
   numTodo: 0,
   results: [],
 }

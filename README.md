@@ -162,6 +162,8 @@ Use `expect(actual_value)` with assertions:
 
 `only()`  Declares an exclusive test or test group that will be executed. If used, all other tests are skipped.
 
+`todo()`  Declares a test or test group as "to-do." The test(s) is/are marked as pending and will not be executed. Helpful for planning and organizing future tests.
+
 ### `Example↓`
 
 
@@ -178,6 +180,14 @@ test.only('description', () => {
 //or
 describe.only('description', () => {
   // Body of the only test group that will be executed
+})
+```
+
+```js
+test.todo('description')
+//or
+describe.todo('description', () => {
+  // This test group is a placeholder and won't run
 })
 ```
 

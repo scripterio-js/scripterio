@@ -56,8 +56,7 @@ type Options = {
    * });
    * ```
    * or
-   *
-   *  * ```js
+   * ```js
    * describe('example', () => {
    *   test.skip('skipped test', () => {
    *     // This test will not run
@@ -67,10 +66,11 @@ type Options = {
    *
    * @param name Test title.
    * @param optionsOrBody (Optional) Object with options
-   * @param callback A callback that is run immediately when calling test(name, optionsOrBody, callback)
+   * @param body A callback that is linked to the skipped test
    */
-  skip(name: string, optionsOrBody: {}, body: {}): void
-    /**
+  skip(name: string, optionsOrBody?: {}, body?: {}): void
+
+  /**
    * Declares an exclusive test group.
    * Only the tests in this group are run, and all other tests are skipped.
    * - `describe.only(title)`
@@ -87,7 +87,6 @@ type Options = {
    * });
    * ```
    * or
-   *
    * ```js
    * describe('example', () => {
    *   test.only('focused test', () => {
@@ -98,9 +97,38 @@ type Options = {
    *
    * @param name Test title.
    * @param optionsOrBody (Optional) Object with options
-   * @param callback A callback that is run immediately when calling test(name, optionsOrBody, callback)
+   * @param body A callback that is linked to the exclusive test
    */
-  only(name: string, optionsOrBody?: {}, body?: {}): void;
+  only(name: string, optionsOrBody?: {}, body?: {}): void
+
+  /**
+   * Declares a test as "to-do".
+   * Marks the test or test group as a placeholder for future implementation, but does not execute it.
+   * - `test.todo(title)`
+   * - `describe.todo(title)`
+   *
+   * **Usage**
+   *
+   * Marking individual tests as "to-do":
+   * ```js
+   * test.todo('Test for input validation');
+   * test.todo('Handle edge cases for user roles');
+   * ```
+   *
+   * Marking a test group as "to-do":
+   * ```js
+   * describe.todo('User Profile Tests', () => {
+   *   // Placeholder for future tests
+   * });
+   * ```
+   *
+   * **Terminal Output**
+   * Tests marked as `todo` will appear in the output as pending, without causing failures.
+   *
+   * @param name Test or group title.
+   * @param optionsOrBody (Optional) Object with additional options
+   */
+  todo(name: string, optionsOrBody?: {}): void
 }
 /**
  * Execute before each test case.
@@ -333,33 +361,33 @@ export function expect(expected: any): Assertions
  */
 export interface Response {
   /** Boolean indicating if the response was successful (status in the range 200-299) */
-  ok: boolean;
+  ok: boolean
   /** The status code of the response (e.g., 200 for success, 404 for not found) */
-  status: number;
+  status: number
   /** The status message associated with the status code */
-  statusText: string;
+  statusText: string
   /** Indicates whether or not the response is the result of a redirect */
-  redirected: boolean;
+  redirected: boolean
   /** The type of the response (e.g., 'basic', 'cors', 'error') */
-  type: string;
+  type: string
   /** The URL of the response */
-  url: string;
+  url: string
   /** The headers associated with the response */
-  headers: Headers;
+  headers: Headers
   /** Indicates whether the body has been read yet */
-  bodyUsed: boolean;
+  bodyUsed: boolean
   /** Returns a promise that resolves with an ArrayBuffer representation of the body */
-  arrayBuffer(): Promise<ArrayBuffer>;
+  arrayBuffer(): Promise<ArrayBuffer>
   /** Returns a promise that resolves with a Blob representation of the body */
-  blob(): Promise<Blob>;
+  blob(): Promise<Blob>
   /** Returns a promise that resolves with a FormData representation of the body */
-  formData(): Promise<FormData>;
+  formData(): Promise<FormData>
   /** Returns a promise that resolves with the result of parsing the body text as JSON */
-  json(): Promise<any>;
+  json(): Promise<any>
   /** Returns a promise that resolves with the body text */
-  text(): Promise<string>;
+  text(): Promise<string>
   /** Creates a clone of the response object */
-  clone(): Response;
+  clone(): Response
 }
 
 /**
@@ -393,7 +421,7 @@ export interface Response {
 export const request: {
   /**
    * Sends a GET request to the specified URL and returns a Response object.
-   * 
+   *
    * @param url - The URL to send the GET request to
    * @param config - Optional request configuration
    * @returns A promise that resolves to a Response object
@@ -412,33 +440,33 @@ export const request: {
    *   }
    * });
    */
-  get(url: string, config?: RequestInit): Promise<Response>;
-  
+  get(url: string, config?: RequestInit): Promise<Response>
+
   /**
    * Sends a POST request with JSON body to the specified URL
    * @param url The URL to send the POST request to
    * @param config Optional request configuration
    */
-  post(url: string, config?: RequestInit): Promise<Response>;
-  
+  post(url: string, config?: RequestInit): Promise<Response>
+
   /**
    * Sends a PUT request with JSON body to the specified URL
    * @param url The URL to send the PUT request to
    * @param config Optional request configuration
    */
-  put(url: string, config?: RequestInit): Promise<Response>;
-  
+  put(url: string, config?: RequestInit): Promise<Response>
+
   /**
    * Sends a PATCH request with JSON body to the specified URL
    * @param url The URL to send the PATCH request to
    * @param config Optional request configuration
    */
-  patch(url: string, config?: RequestInit): Promise<Response>;
-  
+  patch(url: string, config?: RequestInit): Promise<Response>
+
   /**
    * Sends a DELETE request to the specified URL
    * @param url The URL to send the DELETE request to
    * @param config Optional request configuration
    */
-  delete(url: string, config?: RequestInit): Promise<Response>;
-};
+  delete(url: string, config?: RequestInit): Promise<Response>
+}

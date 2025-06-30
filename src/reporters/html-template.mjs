@@ -21,7 +21,13 @@ const formatJson = (data) => {
   }
 }
 
-export const template = ({ numTests, numPassed, numFailed, results }) => {
+export const template = ({
+  numTests,
+  numPassed,
+  numFailed,
+  numTodo,
+  results,
+}) => {
   return `
 <!DOCTYPE html>
 <html>
@@ -115,6 +121,18 @@ export const template = ({ numTests, numPassed, numFailed, results }) => {
       border-radius: 4px;
       overflow-x: auto;
     }
+      
+    .test-name.todo::before {
+      content: '◦';
+      color: #ff9800;
+    }
+    .test-name.todo {
+      color: #ff9800;
+      font-style: italic;
+    }
+
+    .stat.todo { background: #fff3e0; }
+    .stat.todo h3, .stat.todo p { color: #ff9800; }
     .describe-group {
       margin: 0.5rem 0;
       padding: 0 1rem;
@@ -209,6 +227,10 @@ export const template = ({ numTests, numPassed, numFailed, results }) => {
       <div class="stat failed">
         <h3>Failed</h3>
         <p>${numFailed}</p>
+      </div>
+      <div class="stat todo">
+        <h3>Todo</h3>
+        <p>${numTodo}</p>
       </div>
     </div>
 
@@ -319,31 +341,31 @@ export const template = ({ numTests, numPassed, numFailed, results }) => {
           return content
             .map(
               (test) => `
-            <div class="test-case" style="padding-left: ${padding}px">
-              <div class="test-name ${
-                test.errors.length ? 'failed' : 'passed'
-              }">
-                ${test.name}
+        <div class="test-case" style="padding-left: ${padding}px">
+        <div class="test-name ${
+          test.todo ? 'todo' : test.errors.length ? 'failed' : 'passed'
+        }">
+          ${test.name}${test.todo ? ' (TODO)' : ''}
+        </div>
+        ${
+          test.errors.length
+            ? `
+          <a class="toggle-error" onclick="toggleError(this)">Show error details</a>
+          <div class="error-details">
+            ${test.errors
+              .map(
+                (error) => `
+              <div class="error">
+                <pre>${stripAnsi(error.message)}</pre>
+                <pre>${stripAnsi(error.stack)}</pre>
               </div>
-              ${
-                test.errors.length
-                  ? `
-                <a class="toggle-error" onclick="toggleError(this)">Show error details</a>
-                <div class="error-details">
-                  ${test.errors
-                    .map(
-                      (error) => `
-                    <div class="error">
-                      <pre>${stripAnsi(error.message)}</pre>
-                      <pre>${stripAnsi(error.stack)}</pre>
-                    </div>
-                  `
-                    )
-                    .join('')}
+            `
+              )
+              .join('')}
                 </div>
               `
-                  : ''
-              }
+            : ''
+        }
               ${test.apiDetails ? renderApiDetails(test.apiDetails) : ''}
             </div>
           `

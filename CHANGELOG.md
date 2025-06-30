@@ -6,6 +6,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## Unreleased
+### Added
+- Based on [Add `only` as an annotation for the `describe/test`](https://github.com/scripterio-js/scripterio/issues/14):
+  - Retry functionality for tests:
+    - `describe.only()`  Declares an exclusive `describe` that will be executed. If used, all other describes are skipped.
+    - `test.only()`  Declares an exclusive `test` that will be executed. If used, all other tests are skipped.
+
+- Contributors:
+  - [Oleh Babenko](https://github.com/OlehBabenkoo)
+
+### Changed
+- Updated documentation
 
 ## 1.10.0 - 2025-06-22
 ### Added

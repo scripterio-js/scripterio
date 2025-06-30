@@ -46,6 +46,28 @@ export const describe = (name, optionsOrBody, body) =>
 describe.skip = (name) => core.skip(name)
 
 /**
+ * Declares an exclusive test group.
+ * Only the tests in this group are run, and all other tests are skipped.
+ * - `describe.only(title)`
+ * - `describe.only(title, details, callback)`
+ *
+ * **Usage**
+ *
+ * ```js
+ * describe.only('focused group', () => {
+ *   test('example', () => {
+ *     // This test will run
+ *   });
+ * });
+ * ```
+ *
+ * @param name Test title.
+ * @param optionsOrBody (Optional) Object with options
+ * @param callback A callback that is run immediately when calling describe.only(name, optionsOrBody, callback)
+ */
+describe.only = (...args) => core.describe.only(...args)
+
+/**
  * Test a specification or test-case with the given title, test options and callback fn.
  *
  * **Usage**
@@ -84,6 +106,25 @@ export const test = (name, optionsOrBody, body) =>
  * @param callback A callback that is run immediately when calling test(name, optionsOrBody, callback)
  */
 test.skip = (name) => core.skip(name)
+
+/**
+ * Declares an exclusive test.
+ * Only this test is executed, while all others are skipped.
+ * - `test.only(title, callback)`
+ *
+ * **Usage**
+ *
+ * ```js
+ * test.only('focused test', () => {
+ *   // This test will run
+ * });
+ * ```
+ *
+ * @param name Test title.
+ * @param optionsOrBody (Optional) Object with options
+ * @param callback A callback that is run immediately when calling test.only(name, optionsOrBody, callback)
+ */
+test.only = (...args) => core.test.only(...args)
 
 /**
  * Execute before each test case.

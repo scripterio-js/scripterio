@@ -12,8 +12,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - `describe.only()`  Declares an exclusive `describe` that will be executed. If used, all other describes are skipped.
     - `test.only()`  Declares an exclusive `test` that will be executed. If used, all other tests are skipped.
 - Based on [Review&Add additional `unit-tests`](https://github.com/scripterio-js/scripterio/issues/58)
-  - Added unit tests for 
+  - Added unit tests for:
     -`config.mjs`
+    -`setup.mjs`
 
 - Contributors:
   - [Vadym Nastoiashchyi](https://github.com/VadimNastoyashchy)
@@ -21,6 +22,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Updated documentation
+- Refactored core components
 
 ## 1.10.0 - 2025-06-22
 ### Added

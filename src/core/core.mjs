@@ -1,9 +1,7 @@
 import path from 'path'
-import fs from 'fs'
 import { applyColor, transformStackTrace } from '../utils/transform.mjs'
 import { runParsedBlocks } from '../core/context.mjs'
-import { getConfig } from '../config/config.mjs'
-import { getMultipleFilePath } from '../config/setup.mjs'
+import { getTags, getReporterType, chooseTestFiles } from '../config/setup.mjs'
 import { timeStamp } from '../utils/support.mjs'
 import { EXIT_CODES } from '../core/constants.mjs'
 import {
@@ -14,37 +12,7 @@ import {
 } from './output.mjs'
 import { getReporter } from '../reporters/index.mjs'
 
-const config = getConfig()
-
 Error.prepareStackTrace = transformStackTrace
-
-const hasSingleFile = () => config.file
-
-const getSingleFilePath = async () => {
-  try {
-    const fullPath = path.resolve(process.cwd(), config.file)
-    await fs.promises.access(fullPath)
-    return [fullPath]
-  } catch {
-    console.error(`File ${config.file} could not be accessed.`)
-    process.exit(0)
-  }
-}
-
-const getTestFiles = async () => {
-  return getMultipleFilePath(path.resolve(process.cwd(), config.folder))
-}
-
-const getTags = () => {
-  return config.tags ? config.tags.split(',') : ''
-}
-
-const getReporterType = () => {
-  return config.reporter || ''
-}
-
-const chooseTestFiles = () =>
-  hasSingleFile() ? getSingleFilePath() : getTestFiles()
 
 export const run = async () => {
   const startTimeStamp = timeStamp()

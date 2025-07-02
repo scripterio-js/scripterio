@@ -198,7 +198,7 @@ const runTest = async (test) => {
     attempts++
   }
 
- const endTimeStamp = timeStamp()
+  const endTimeStamp = timeStamp()
   if (!passed) {
     result.numFailed++
     console.log(indent(applyColor(`<red>✗</red> ${currentTest.name}`)))

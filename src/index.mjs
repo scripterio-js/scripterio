@@ -68,6 +68,38 @@ describe.skip = (name) => core.skip(name)
 describe.only = (...args) => core.describe.only(...args)
 
 /**
+ * Declares a test group as "to-do".
+ * Marks the entire group of tests as a placeholder for future implementation but does not execute it.
+ * Useful for keeping track of large features or modules that require further testing.
+ * - `describe.todo(title)`
+ *
+ * **Usage**
+ *
+ * Marking a test group as "to-do":
+ *
+ * ```js
+ * describe.todo('Feature: User Authentication Tests', () => {
+ *   // Placeholder for tests related to user authentication
+ * });
+ * ```
+ *
+ * Practical example:
+ * ```js
+ * describe.todo('API Endpoint Tests', () => {
+ *   test.todo('Test GET /users endpoint');
+ *   test.todo('Test POST /users endpoint');
+ * });
+ * ```
+ *
+ * **Terminal Output**
+ * When running the test suite, `describe.todo` groups and their respective `test.todo` entries will appear in the results as pending, without causing failures or executions.
+ *
+ * @param name Group title.
+ * @param optionsOrBody (Optional) Object with options
+ * @param callback (Optional) A callback function to define additional structure inside the group.
+ */
+describe.todo = (...args) => core.describe.todo(...args)
+/**
  * Test a specification or test-case with the given title, test options and callback fn.
  *
  * **Usage**
@@ -125,6 +157,34 @@ test.skip = (name) => core.skip(name)
  * @param callback A callback that is run immediately when calling test.only(name, optionsOrBody, callback)
  */
 test.only = (...args) => core.test.only(...args)
+
+/**
+ * Declares a test as "to-do".
+ * Marks the test as a placeholder for future implementation but doesn't execute it.
+ * This can be useful for tracking incomplete test cases or reminders for future work.
+ * - `test.todo(title)`
+ *
+ * **Usage**
+ *
+ * Marking individual tests as "to-do":
+ *
+ * ```js
+ * test.todo('Add validation for input data');
+ * test.todo('Test error handling for invalid user sessions');
+ * ```
+ *
+ * Practical example:
+ * ```js
+ * test.todo('Implement edge case handling for data overflow');
+ * test.todo('Add tests for login timeout scenarios');
+ * ```
+ *
+ * **Terminal Output**
+ * When running the test suite, `test.todo` tests will appear in the results as pending, but they will not fail or be executed.
+ *
+ * @param name Test title.
+ */
+test.todo = (...args) => core.test.todo(...args)
 
 /**
  * Execute before each test case.

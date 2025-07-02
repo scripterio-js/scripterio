@@ -25,6 +25,7 @@ export const result = {
   numTests: 0,
   numPassed: 0,
   numFailed: 0,
+  numTodo: 0,
   results: [],
 }
 
@@ -59,17 +60,23 @@ export const describe = (name, optionsOrBody, body) => {
   }
 }
 
-describe.only = (name, optionsOrBody, body) => {
-  const options = typeof optionsOrBody === 'object' ? optionsOrBody : {}
-  const actualBody = typeof optionsOrBody === 'function' ? optionsOrBody : body
-  const parentDescribe = currentDescribe
-  currentDescribe = makeDescribe(name, { ...options, focus: true })
-  actualBody()
-  currentDescribe = {
-    ...parentDescribe,
-    children: [...parentDescribe.children, currentDescribe],
+function createDescribeVariant(extra) {
+  return (name, optionsOrBody, body) => {
+    const options = typeof optionsOrBody === 'object' ? optionsOrBody : {}
+    const actualBody = typeof optionsOrBody === 'function' ? optionsOrBody : body
+    const parentDescribe = currentDescribe
+    currentDescribe = makeDescribe(name, { ...options, ...extra })
+    // Для todo не викликаємо body
+    if (!extra.todo) actualBody?.()
+    currentDescribe = {
+      ...parentDescribe,
+      children: [...parentDescribe.children, currentDescribe],
+    }
   }
 }
+
+describe.only = createDescribeVariant({ focus: true })
+describe.todo = createDescribeVariant({ todo: true })
 
 export const test = (name, optionsOrBody, body) => {
   const options = typeof optionsOrBody === 'object' ? optionsOrBody : {}
@@ -83,17 +90,31 @@ export const test = (name, optionsOrBody, body) => {
   }
 }
 
-test.only = (name, optionsOrBody, body) => {
-  const options = typeof optionsOrBody === 'object' ? optionsOrBody : {}
-  const actualBody = typeof optionsOrBody === 'function' ? optionsOrBody : body
-  currentDescribe = {
-    ...currentDescribe,
-    children: [
-      ...currentDescribe.children,
-      { ...makeTest(name, actualBody, options.timeout, options.tags, options.retry), focus: true },
-    ],
+function createTestVariant(extra) {
+  return (name, optionsOrBody, body) => {
+    const options = typeof optionsOrBody === 'object' ? optionsOrBody : {}
+    const actualBody = typeof optionsOrBody === 'function' ? optionsOrBody : body
+    currentDescribe = {
+      ...currentDescribe,
+      children: [
+        ...currentDescribe.children,
+        {
+          ...makeTest(
+            name,
+            extra.todo ? () => {} : actualBody,
+            options.timeout,
+            options.tags,
+            options.retry
+          ),
+          ...extra,
+        },
+      ],
+    }
   }
 }
+
+test.only = createTestVariant({ focus: true })
+test.todo = createTestVariant({ todo: true })
 
 export const skip = (name) => {
   printSkippedMsg(name)
@@ -179,7 +200,18 @@ const runTest = async (test) => {
     }
     attempts++
   }
-  if (!passed) {
+  if (test.skip) {
+    result.numSkipped++
+    console.log(
+      indent(applyColor(`<cyan>⏸</cyan> ${currentTest.name} (SKIPPED)`))
+    )
+  }
+  if (test.todo) {
+    result.numTodo++
+    console.log(
+      indent(applyColor(`<yellow>◦</yellow> ${currentTest.name} (TODO)`))
+    )
+  } else if (!passed) {
     result.numFailed++
     console.log(indent(applyColor(`<red>✗</red> ${currentTest.name}`)))
     failures.push(currentTest)

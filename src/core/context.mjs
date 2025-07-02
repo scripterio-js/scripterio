@@ -48,73 +48,60 @@ const makeTest = (name, body, timeout = defaultTimeout, tags = [], retry) => ({
 
 currentDescribe = makeDescribe('root')
 
-export const describe = (name, optionsOrBody, body) => {
+const handleDescribe = (name, optionsOrBody, body, extra = {}) => {
   const options = typeof optionsOrBody === 'object' ? optionsOrBody : {}
   const actualBody = typeof optionsOrBody === 'function' ? optionsOrBody : body
   const parentDescribe = currentDescribe
-  currentDescribe = makeDescribe(name, options)
-  actualBody()
+  currentDescribe = makeDescribe(name, { ...options, ...extra })
+  if (!extra.todo) actualBody?.()
   currentDescribe = {
     ...parentDescribe,
     children: [...parentDescribe.children, currentDescribe],
   }
 }
 
-function createDescribeVariant(extra) {
-  return (name, optionsOrBody, body) => {
-    const options = typeof optionsOrBody === 'object' ? optionsOrBody : {}
-    const actualBody = typeof optionsOrBody === 'function' ? optionsOrBody : body
-    const parentDescribe = currentDescribe
-    currentDescribe = makeDescribe(name, { ...options, ...extra })
-    // Для todo не викликаємо body
-    if (!extra.todo) actualBody?.()
-    currentDescribe = {
-      ...parentDescribe,
-      children: [...parentDescribe.children, currentDescribe],
-    }
-  }
+export const describe = (name, optionsOrBody, body) => {
+  handleDescribe(name, optionsOrBody, body)
 }
 
-describe.only = createDescribeVariant({ focus: true })
-describe.todo = createDescribeVariant({ todo: true })
+describe.only = (name, optionsOrBody, body) => {
+  handleDescribe(name, optionsOrBody, body, { focus: true })
+}
+describe.todo = (name, optionsOrBody, body) => {
+  handleDescribe(name, optionsOrBody, body, { todo: true })
+}
 
-export const test = (name, optionsOrBody, body) => {
+const handleTest = (name, optionsOrBody, body, extra = {}) => {
   const options = typeof optionsOrBody === 'object' ? optionsOrBody : {}
   const actualBody = typeof optionsOrBody === 'function' ? optionsOrBody : body
   currentDescribe = {
     ...currentDescribe,
     children: [
       ...currentDescribe.children,
-      makeTest(name, actualBody, options.timeout, options.tags, options.retry),
+      {
+        ...makeTest(
+          name,
+          extra.todo ? () => {} : actualBody,
+          options.timeout,
+          options.tags,
+          options.retry
+        ),
+        ...extra,
+      },
     ],
   }
 }
 
-function createTestVariant(extra) {
-  return (name, optionsOrBody, body) => {
-    const options = typeof optionsOrBody === 'object' ? optionsOrBody : {}
-    const actualBody = typeof optionsOrBody === 'function' ? optionsOrBody : body
-    currentDescribe = {
-      ...currentDescribe,
-      children: [
-        ...currentDescribe.children,
-        {
-          ...makeTest(
-            name,
-            extra.todo ? () => {} : actualBody,
-            options.timeout,
-            options.tags,
-            options.retry
-          ),
-          ...extra,
-        },
-      ],
-    }
-  }
+export const test = (name, optionsOrBody, body) => {
+  handleTest(name, optionsOrBody, body)
 }
 
-test.only = createTestVariant({ focus: true })
-test.todo = createTestVariant({ todo: true })
+test.only = (name, optionsOrBody, body) => {
+  handleTest(name, optionsOrBody, body, { focus: true })
+}
+test.todo = (name, optionsOrBody, body) => {
+  handleTest(name, optionsOrBody, body, { todo: true })
+}
 
 export const skip = (name) => {
   printSkippedMsg(name)
@@ -175,6 +162,14 @@ const runTest = async (test) => {
   let passed = false
   global.currentTest = test
   currentTest.describeStack = [...describeStack]
+
+  if (test.todo) {
+    result.numTodo++
+    console.log(
+      indent(applyColor(`<yellow>◦</yellow> ${currentTest.name} (TODO)`))
+    )
+  }
+
   while (attempts <= maxRetries && !passed) {
     if (attempts > 0) {
       console.log(
@@ -200,18 +195,7 @@ const runTest = async (test) => {
     }
     attempts++
   }
-  if (test.skip) {
-    result.numSkipped++
-    console.log(
-      indent(applyColor(`<cyan>⏸</cyan> ${currentTest.name} (SKIPPED)`))
-    )
-  }
-  if (test.todo) {
-    result.numTodo++
-    console.log(
-      indent(applyColor(`<yellow>◦</yellow> ${currentTest.name} (TODO)`))
-    )
-  } else if (!passed) {
+  if (!passed) {
     result.numFailed++
     console.log(indent(applyColor(`<red>✗</red> ${currentTest.name}`)))
     failures.push(currentTest)

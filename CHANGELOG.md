@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Retry functionality for tests:
     - `describe.only()`  Declares an exclusive `describe` that will be executed. If used, all other describes are skipped.
     - `test.only()`  Declares an exclusive `test` that will be executed. If used, all other tests are skipped.
+- Based on [Add `todo` as an annotation for the `describe/test`](https://github.com/scripterio-js/scripterio/issues/46)
+  - The test(s) is/are marked as pending and will not be executed. Helpful for planning and organizing future tests.
+    - `describe.todo()`  Declares a test group as "to-do." 
+    - `test.todo()`  Declares a test as "to-do." 
 - Based on [Review&Add additional `unit-tests`](https://github.com/scripterio-js/scripterio/issues/58)
   - Added unit tests for:
     -`config.mjs`

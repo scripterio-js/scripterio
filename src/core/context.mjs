@@ -9,6 +9,7 @@ import {
 } from '../utils/transform.mjs'
 import { printNewLine, printSkippedMsg } from './output.mjs'
 import { getConfig } from '../config/config.mjs'
+import { timeStamp } from '../utils/support.mjs'
 
 const config = getConfig()
 const failures = []
@@ -163,6 +164,7 @@ const runTest = async (test) => {
   global.currentTest = test
   currentTest.describeStack = [...describeStack]
 
+  const startTimeStamp = timeStamp()
   if (test.todo) {
     result.numTodo++
     console.log(
@@ -195,6 +197,8 @@ const runTest = async (test) => {
     }
     attempts++
   }
+
+ const endTimeStamp = timeStamp()
   if (!passed) {
     result.numFailed++
     console.log(indent(applyColor(`<red>✗</red> ${currentTest.name}`)))
@@ -206,6 +210,7 @@ const runTest = async (test) => {
   }
   result.numTests++
   result.results.push(currentTest)
+  currentTest.duration = endTimeStamp - startTimeStamp
   global.currentTest = null
 }
 

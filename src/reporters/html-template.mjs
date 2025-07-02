@@ -341,34 +341,37 @@ export const template = ({
           return content
             .map(
               (test) => `
-        <div class="test-case" style="padding-left: ${padding}px">
-        <div class="test-name ${
-          test.todo ? 'todo' : test.errors.length ? 'failed' : 'passed'
-        }">
-          ${test.name}${test.todo ? ' (TODO)' : ''}
-        </div>
-        ${
-          test.errors.length
-            ? `
-          <a class="toggle-error" onclick="toggleError(this)">Show error details</a>
-          <div class="error-details">
-            ${test.errors
-              .map(
-                (error) => `
-              <div class="error">
-                <pre>${stripAnsi(error.message)}</pre>
-                <pre>${stripAnsi(error.stack)}</pre>
-              </div>
-            `
-              )
-              .join('')}
-                </div>
-              `
-            : ''
-        }
-              ${test.apiDetails ? renderApiDetails(test.apiDetails) : ''}
+      <div class="test-case" style="padding-left: ${padding}px">
+      <div class="test-name ${
+        test.todo ? 'todo' : test.errors.length ? 'failed' : 'passed'
+      }">
+        ${test.name}${test.todo ? ' (TODO)' : ''}
+        <span style="color:#888; font-size:0.95em; margin-left:0.5em;">${
+          typeof test.duration === 'number' ? `${test.duration} ms` : ''
+        }</span>
+      </div>
+      ${
+        test.errors.length
+          ? `
+        <a class="toggle-error" onclick="toggleError(this)">Show error details</a>
+        <div class="error-details">
+          ${test.errors
+            .map(
+              (error) => `
+            <div class="error">
+              <pre>${stripAnsi(error.message)}</pre>
+              <pre>${stripAnsi(error.stack)}</pre>
             </div>
           `
+            )
+            .join('')}
+              </div>
+            `
+          : ''
+      }
+            ${test.apiDetails ? renderApiDetails(test.apiDetails) : ''}
+          </div>
+        `
             )
             .join('')
         }

@@ -25,221 +25,157 @@ export const template = ({
   numTests,
   numPassed,
   numFailed,
-  numTodo,
+  numTodo = 0,
   results,
 }) => {
+  const percent = (v) => (numTests === 0 ? 0 : Math.round((v / numTests) * 100))
+
   return `
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Test Results</title>
+  <title>Test Report</title>
   <style>
-    body { 
-      font-family: system-ui, -apple-system, sans-serif;
-      line-height: 1.5;
-      padding: 2rem;
-      margin: 0;
-      background: #f5f5f5;
-    }
-    .container {
-      max-width: 1200px;
-      margin: 0 auto;
-      background: white;
-      padding: 2rem;
-      border-radius: 8px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    }
-    .header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 2rem;
-      padding-bottom: 1rem;
-      border-bottom: 1px solid #eee;
-    }
-    .header-controls {
-      display: flex; 
-      gap: 1rem;
-      align-items: center;
-    }
-    .summary {
-      display: flex;
-      gap: 2rem;
-      margin-bottom: 2rem;
-    }
-    .stat {
-      padding: 1rem;
-      border-radius: 6px;
-      min-width: 120px;
-    }
+    body { font-family: system-ui, -apple-system, sans-serif; background: #f5f5f5; margin: 0; padding: 2rem; }
+    .container { max-width: 1200px; margin: 0 auto; background: #fff; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.08); padding: 2rem; }
+    .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; }
+    .main-flex { display: flex; align-items: center; gap: 3rem; margin-bottom: 2.5rem; }
+    .pie-chart-container { position: relative; width: 200px; height: 200px; background: #fff; border-radius: 50%; box-shadow: 0 2px 8px rgba(0,0,0,0.07); display: flex; align-items: center; justify-content: center; }
+    .pie-legend { display: flex; flex-direction: column; gap: 0.7rem; margin-top: 1.5rem; font-size: 1.1rem; }
+    .pie-legend-item { display: flex; align-items: center; gap: 0.6rem; }
+    .dot { width: 18px; height: 18px; border-radius: 50%; display: inline-block; }
+    .pie-passed { background: #4caf50; }
+    .pie-failed { background: #f44336; }
+    .pie-todo { background: #ff9800; }
+    .pie-stat-label { font-weight: 600; min-width: 60px; display: inline-block; }
+    .pie-stat-value { font-weight: 700; margin-left: 0.5em; }
+    .summary-tiles { display: flex; flex-direction: row; gap: 1.5rem; align-items: center; height: 200px; }
+    .stat { padding: 1.2rem 1.5rem; border-radius: 12px; min-width: 120px; background: #f5f5f5; box-shadow: 0 1px 2px rgba(0,0,0,0.03); display: flex; flex-direction: column; align-items: center; justify-content: center; height: 120px; }
     .stat.total { background: #e3f2fd; }
     .stat.passed { background: #e8f5e9; }
     .stat.failed { background: #ffebee; }
-    .stat h3 { margin: 0; }
-    .stat p { margin: 0.5rem 0 0; font-size: 1.5rem; font-weight: bold; }
-    .test-case {
-      padding: 0.75rem 1rem;
-      border-bottom: 1px solid #eee;
-    }
-    .test-case:last-child {
-      border-bottom: none;
-    }
-    .test-name {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-    .test-name.passed::before {
-      content: '✓';
-      color: #4caf50;
-    }
-    .test-name.failed::before {
-      content: '✗';
-      color: #f44336;
-    }
-    .error-details {
-      margin-top: 1rem;
-      padding: 1rem;
-      background: #fff8f8;
-      border-radius: 4px;
-      display: none;
-    }
-    .error-details.show {
-      display: block;
-    }
-    .toggle-error {
-      color: #f44336;
-      text-decoration: underline;
-      cursor: pointer;
-      margin-top: 0.5rem;
-      display: inline-block;
-    }
-    pre {
-      margin: 0.5rem 0;
-      padding: 1rem;
-      background: #f5f5f5;
-      border-radius: 4px;
-      overflow-x: auto;
-    }
-      
-    .test-name.todo::before {
-      content: '◦';
-      color: #ff9800;
-    }
-    .test-name.todo {
-      color: #ff9800;
-      font-style: italic;
-    }
-
     .stat.todo { background: #fff3e0; }
+    .stat h3 { margin: 0 0 0.3em 0; font-size: 1.1em; font-weight: 600; }
+    .stat p { margin: 0; font-size: 2rem; font-weight: bold; }
+    .stat.passed h3, .stat.passed p { color: #4caf50; }
+    .stat.failed h3, .stat.failed p { color: #f44336; }
     .stat.todo h3, .stat.todo p { color: #ff9800; }
-    .describe-group {
-      margin: 0.5rem 0;
-      padding: 0 1rem;
-    }
-    .describe-header {
-      padding: 0.75rem 1rem;
-      background: #f3f4f6;
-      margin: 0.5rem 0;
-      font-weight: 600;
-      border-radius: 4px;
-      cursor: pointer;
-    }
-    .describe-content {
-      display: block;
-      padding: 0.5rem 0;
-    }
-    .describe-content.hide {
-      display: none;
-    }
-    .api-details {
-      margin-top: 1rem;
-      padding: 1rem;
-      background: #f8f9fa;
-      border-radius: 4px;
-      display: none;
-    }
-    .api-details.show {
-      display: block;
-    }
-    .toggle-api {
-      color: #2196f3;
-      text-decoration: underline;
-      cursor: pointer;
-      margin-top: 0.5rem;
-      display: inline-block;
-      margin-left: 1rem;
-    }
-    .api-section {
-      margin: 1rem 0;
-      padding: 1rem;
-      background: #fff;
-      border: 1px solid #e0e0e0;
-      border-radius: 4px;
-    }
-    .api-section h4 {
-      margin: 0 0 0.5rem 0;
-      color: #555;
-    }
-    .api-table {
-      width: 100%;
-      border-collapse: collapse;
-      margin: 0.5rem 0;
-    }
-    .api-table th, .api-table td {
-      text-align: left;
-      padding: 0.5rem;
-      border: 1px solid #e0e0e0;
-    }
-    .api-table th {
-      background: #f3f4f6;
-      font-weight: 600;
-    }
-    pre.api-data {
-      margin: 0.5rem 0;
-      padding: 0.5rem;
-      background: #f5f5f5;
-      border-radius: 4px;
-      max-height: 200px;
-      overflow-y: auto;
-      white-space: pre-wrap;
-    }
+    .test-case { padding: 0.75rem 1rem; border-bottom: 1px solid #eee; }
+    .test-case:last-child { border-bottom: none; }
+    .test-name { display: flex; align-items: center; gap: 0.5rem; }
+    .test-name.passed::before { content: '✓'; color: #4caf50; }
+    .test-name.failed::before { content: '✗'; color: #f44336; }
+    .test-name.todo::before { content: '◦'; color: #ff9800; }
+    .test-name.todo { color: #ff9800; font-style: italic; }
+    .error-details { margin-top: 1rem; padding: 1rem; background: #fff8f8; border-radius: 4px; display: none; }
+    .error-details.show { display: block; }
+    .toggle-error { color: #f44336; text-decoration: underline; cursor: pointer; margin-top: 0.5rem; display: inline-block; }
+    pre { margin: 0.5rem 0; padding: 1rem; background: #f5f5f5; border-radius: 4px; overflow-x: auto; }
+    .describe-group { margin: 0.5rem 0; padding: 0 1rem; }
+    .describe-header { padding: 0.75rem 1rem; background: #f3f4f6; margin: 0.5rem 0; font-weight: 600; border-radius: 4px; cursor: pointer; }
+    .describe-content { display: block; padding: 0.5rem 0; }
+    .describe-content.hide { display: none; }
+    .api-details { margin-top: 1rem; padding: 1rem; background: #f8f9fa; border-radius: 4px; display: none; }
+    .api-details.show { display: block; }
+    .toggle-api { color: #2196f3; text-decoration: underline; cursor: pointer; margin-top: 0.5rem; display: inline-block; margin-left: 1rem; }
+    .api-section { margin: 1rem 0; padding: 1rem; background: #fff; border: 1px solid #e0e0e0; border-radius: 4px; }
+    .api-section h4 { margin: 0 0 0.5rem 0; color: #555; }
+    .api-table { width: 100%; border-collapse: collapse; margin: 0.5rem 0; }
+    .api-table th, .api-table td { text-align: left; padding: 0.5rem; border: 1px solid #e0e0e0; }
+    .api-table th { background: #f3f4f6; font-weight: 600; }
+    pre.api-data { margin: 0.5rem 0; padding: 0.5rem; background: #f5f5f5; border-radius: 4px; max-height: 200px; overflow-y: auto; white-space: pre-wrap; }
   </style>
 </head>
 <body>
   <div class="container">
     <div class="header">
-      <h1>Test Results</h1>
-      <div class="header-controls">
-        <div>${new Date().toLocaleString()}</div>
+      <h1>Test Report</h1>
+      <div>${new Date().toLocaleString()}</div>
+    </div>
+    <div class="main-flex">
+      <div>
+        <div class="pie-chart-container">
+          <canvas id="pieChart" width="200" height="200"></canvas>
+        </div>
+        <div class="pie-legend">
+          <div class="pie-legend-item">
+            <span class="dot pie-passed"></span>
+            <span class="pie-stat-label">Passed</span>
+            <span class="pie-stat-value" id="percent-passed">${percent(
+              numPassed
+            )}%</span>
+          </div>
+          <div class="pie-legend-item">
+            <span class="dot pie-failed"></span>
+            <span class="pie-stat-label">Failed</span>
+            <span class="pie-stat-value" id="percent-failed">${percent(
+              numFailed
+            )}%</span>
+          </div>
+          <div class="pie-legend-item">
+            <span class="dot pie-todo"></span>
+            <span class="pie-stat-label">Todo</span>
+            <span class="pie-stat-value" id="percent-todo">${percent(
+              numTodo
+            )}%</span>
+          </div>
+        </div>
+      </div>
+      <div class="summary-tiles">
+        <div class="stat total">
+          <h3>Total</h3>
+          <p>${numTests}</p>
+        </div>
+        <div class="stat passed">
+          <h3>Passed</h3>
+          <p>${numPassed}</p>
+        </div>
+        <div class="stat failed">
+          <h3>Failed</h3>
+          <p>${numFailed}</p>
+        </div>
+        <div class="stat todo">
+          <h3>Todo</h3>
+          <p>${numTodo}</p>
+        </div>
       </div>
     </div>
-    
-    <div class="summary">
-      <div class="stat total">
-        <h3>Total Tests</h3>
-        <p>${numTests}</p>
-      </div>
-      <div class="stat passed">
-        <h3>Passed</h3>
-        <p>${numPassed}</p>
-      </div>
-      <div class="stat failed">
-        <h3>Failed</h3>
-        <p>${numFailed}</p>
-      </div>
-      <div class="stat todo">
-        <h3>Todo</h3>
-        <p>${numTodo}</p>
-      </div>
-    </div>
-
     <div class="results">
-        ${renderDescribeGroup(groupByDescribe(results))}
+      ${renderDescribeGroup(groupByDescribe(results))}
     </div>
   </div>
-
   <script>
+    (function() {
+      const data = [
+        { value: ${numPassed}, color: '#4caf50' },
+        { value: ${numFailed}, color: '#f44336' },
+        { value: ${numTodo}, color: '#ff9800' }
+      ];
+      const total = ${numTests};
+      const canvas = document.getElementById('pieChart');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      const centerX = canvas.width / 2;
+      const centerY = canvas.height / 2;
+      const radius = 90;
+      let startAngle = -0.5 * Math.PI;
+      const totalValue = data.reduce((sum, d) => sum + d.value, 0);
+      data.forEach((d) => {
+        if (d.value > 0) {
+          const slice = (d.value / totalValue) * 2 * Math.PI;
+          ctx.beginPath();
+          ctx.moveTo(centerX, centerY);
+          ctx.arc(centerX, centerY, radius, startAngle, startAngle + slice);
+          ctx.closePath();
+          ctx.fillStyle = d.color;
+          ctx.globalAlpha = 0.92;
+          ctx.fill();
+          ctx.globalAlpha = 1;
+          startAngle += slice;
+        }
+      });
+    })();
+
     function toggleDescribeContent(element) {
       const content = element.nextElementSibling;
       content.classList.toggle('hide');
@@ -258,12 +194,6 @@ export const template = ({
       details.classList.toggle('show');
       element.textContent = isShowing ? 'Show API details' : 'Hide API details';
     }
-
-    document.addEventListener('DOMContentLoaded', () => {
-      const failedTests = document.querySelectorAll('.test-name.failed');
-      failedTests.forEach(test => {
-      });
-    });
   </script>
 </body>
 </html>

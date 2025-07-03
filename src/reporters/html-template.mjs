@@ -29,8 +29,6 @@ export const template = ({
   numTodo = 0,
   results,
 }) => {
-  const percent = (count) => getPercent(count, numTests)
-
   return `
 <!DOCTYPE html>
 <html>
@@ -40,19 +38,43 @@ export const template = ({
     body { font-family: system-ui, -apple-system, sans-serif; background: #f5f5f5; margin: 0; padding: 2rem; }
     .container { max-width: 1200px; margin: 0 auto; background: #fff; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.08); padding: 2rem; }
     .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; }
-    .main-flex { display: flex; align-items: center; gap: 3rem; margin-bottom: 2.5rem; }
+    .main-flex { display: flex; align-items: center; gap: 3rem; margin-bottom: 0.5rem; }
     .pie-chart-container { position: relative; width: 200px; height: 200px; background: #fff; border-radius: 50%; box-shadow: 0 2px 8px rgba(0,0,0,0.07); display: flex; align-items: center; justify-content: center; }
-    .pie-legend { display: flex; flex-direction: column; gap: 0.7rem; margin-top: 1.5rem; font-size: 1.1rem; }
-    .pie-legend-item { display: flex; align-items: center; gap: 0.6rem; }
-    .dot { width: 18px; height: 18px; border-radius: 50%; display: inline-block; }
-    .pie-passed { background: #4caf50; }
-    .pie-failed { background: #f44336; }
-    .pie-todo { background: #ff9800; }
-    .pie-stat-label { font-weight: 600; min-width: 60px; display: inline-block; }
-    .pie-stat-value { font-weight: 700; margin-left: 0.5em; }
-    .summary-tiles { display: flex; flex-direction: row; gap: 1.5rem; align-items: center; height: 200px; }
-    .stat { padding: 1.2rem 1.5rem; border-radius: 12px; min-width: 120px; background: #f5f5f5; box-shadow: 0 1px 2px rgba(0,0,0,0.03); display: flex; flex-direction: column; align-items: center; justify-content: center; height: 120px; }
-    .stat.total { background: #e3f2fd; }
+    .summary-tiles {
+      display: flex;
+      flex-direction: row;
+      gap: 1.2rem;
+      align-items: center;
+      justify-content: center;
+      height: 200px;
+    }
+    .stat {
+      padding: 1.2rem 1.5rem;
+      border-radius: 12px;
+      min-width: 120px;
+      background: #f5f5f5;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 70px;
+      cursor: pointer;
+      transition: box-shadow 0.2s;
+      border: 2px solid transparent;
+    }
+    .stat-percent {
+      font-size: 1.1em;
+      font-weight: 600;
+      margin-top: 0.3em;
+      text-align: center;
+    }
+    .stat.active {
+      box-shadow: 0 2px 8px rgba(33,150,243,0.13);
+      border: 2px solid #2196f3;
+      background: #e3f2fd;
+    }
+    .stat.total { background: #e3f2fd; cursor: default; border: 2px solid transparent; }
     .stat.passed { background: #e8f5e9; }
     .stat.failed { background: #ffebee; }
     .stat.todo { background: #fff3e0; }
@@ -61,6 +83,13 @@ export const template = ({
     .stat.passed h3, .stat.passed p { color: #4caf50; }
     .stat.failed h3, .stat.failed p { color: #f44336; }
     .stat.todo h3, .stat.todo p { color: #ff9800; }
+    .stat.total h3, .stat.total p { color: #2196f3; }
+    .dot { width: 18px; height: 18px; border-radius: 50%; display: inline-block; }
+    .pie-passed { background: #4caf50; }
+    .pie-failed { background: #f44336; }
+    .pie-todo { background: #ff9800; }
+    .pie-stat-label { font-weight: 600; min-width: 60px; display: inline-block; }
+    .pie-stat-value { font-weight: 700; margin-left: 0.5em; }
     .test-case { padding: 0.75rem 1rem; border-bottom: 1px solid #eee; }
     .test-case:last-child { border-bottom: none; }
     .test-name { display: flex; align-items: center; gap: 0.5rem; }
@@ -85,6 +114,7 @@ export const template = ({
     .api-table th, .api-table td { text-align: left; padding: 0.5rem; border: 1px solid #e0e0e0; }
     .api-table th { background: #f3f4f6; font-weight: 600; }
     pre.api-data { margin: 0.5rem 0; padding: 0.5rem; background: #f5f5f5; border-radius: 4px; max-height: 200px; overflow-y: auto; white-space: pre-wrap; }
+    .hidden { display: none !important; }
   </style>
 </head>
 <body>
@@ -98,50 +128,31 @@ export const template = ({
         <div class="pie-chart-container">
           <canvas id="pieChart" width="200" height="200"></canvas>
         </div>
-        <div class="pie-legend">
-          <div class="pie-legend-item">
-            <span class="dot pie-passed"></span>
-            <span class="pie-stat-label">Passed</span>
-            <span class="pie-stat-value" id="percent-passed">${percent(
-              numPassed
-            )}%</span>
-          </div>
-          <div class="pie-legend-item">
-            <span class="dot pie-failed"></span>
-            <span class="pie-stat-label">Failed</span>
-            <span class="pie-stat-value" id="percent-failed">${percent(
-              numFailed
-            )}%</span>
-          </div>
-          <div class="pie-legend-item">
-            <span class="dot pie-todo"></span>
-            <span class="pie-stat-label">Todo</span>
-            <span class="pie-stat-value" id="percent-todo">${percent(
-              numTodo
-            )}%</span>
-          </div>
-        </div>
       </div>
       <div class="summary-tiles">
-        <div class="stat total">
+        <div class="stat total" data-filter="all">
           <h3>Total</h3>
           <p>${numTests}</p>
+          <div class="stat-percent" style="color:#2196f3;">${getPercent(numTests, numTests)}%</div>
         </div>
-        <div class="stat passed">
+        <div class="stat passed" data-filter="passed">
           <h3>Passed</h3>
           <p>${numPassed}</p>
+          <div class="stat-percent" style="color:#4caf50;">${getPercent(numPassed, numTests)}%</div>
         </div>
-        <div class="stat failed">
+        <div class="stat failed" data-filter="failed">
           <h3>Failed</h3>
           <p>${numFailed}</p>
+          <div class="stat-percent" style="color:#f44336;">${getPercent(numFailed, numTests)}%</div>
         </div>
-        <div class="stat todo">
+        <div class="stat todo" data-filter="todo">
           <h3>Todo</h3>
           <p>${numTodo}</p>
+          <div class="stat-percent" style="color:#ff9800;">${getPercent(numTodo, numTests)}%</div>
         </div>
       </div>
     </div>
-    <div class="results">
+    <div class="results" id="results-root">
       ${renderDescribeGroup(groupByDescribe(results))}
     </div>
   </div>
@@ -176,6 +187,46 @@ export const template = ({
         }
       });
     })();
+
+    document.querySelectorAll('.stat[data-filter]').forEach(tile => {
+      tile.addEventListener('click', function() {
+        document.querySelectorAll('.stat[data-filter]').forEach(t => t.classList.remove('active'));
+        this.classList.add('active');
+        const filter = this.getAttribute('data-filter');
+        filterResults(filter);
+      });
+    });
+
+    function filterResults(filter) {
+      const root = document.getElementById('results-root');
+      if (!root) return;
+      if (filter === 'all') {
+        root.querySelectorAll('.test-case').forEach(tc => tc.classList.remove('hidden'));
+        root.querySelectorAll('.describe-group').forEach(dg => dg.classList.remove('hidden'));
+        return;
+      }
+      root.querySelectorAll('.test-case').forEach(tc => tc.classList.add('hidden'));
+      root.querySelectorAll('.test-case').forEach(tc => {
+        if (
+          (filter === 'passed' && tc.querySelector('.test-name.passed')) ||
+          (filter === 'failed' && tc.querySelector('.test-name.failed')) ||
+          (filter === 'todo' && tc.querySelector('.test-name.todo'))
+        ) {
+          tc.classList.remove('hidden');
+        }
+      });
+      root.querySelectorAll('.describe-group').forEach(dg => {
+        const hasVisible = dg.querySelectorAll('.test-case:not(.hidden)').length > 0 ||
+          dg.querySelectorAll('.describe-group:not(.hidden)').length > 0;
+        if (hasVisible) {
+          dg.classList.remove('hidden');
+        } else {
+          dg.classList.add('hidden');
+        }
+      });
+    }
+  
+    document.querySelector('.stat.total').classList.add('active');
 
     function toggleDescribeContent(element) {
       const content = element.nextElementSibling;

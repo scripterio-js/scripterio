@@ -1,5 +1,6 @@
 /* eslint-disable space-before-function-paren */
 /* eslint-disable no-control-regex */
+import { getPercent } from '../utils/support.mjs'
 const stripAnsi = (str) => str.replace(/(\x1b|\u001b)\[\d+(?:;\d+)*m/g, '')
 
 const escapeHtml = (str) => {
@@ -28,7 +29,7 @@ export const template = ({
   numTodo = 0,
   results,
 }) => {
-  const percent = (v) => (numTests === 0 ? 0 : Math.round((v / numTests) * 100))
+  const percent = (count) => getPercent(count, numTests)
 
   return `
 <!DOCTYPE html>

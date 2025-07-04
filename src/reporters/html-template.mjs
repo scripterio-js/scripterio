@@ -259,12 +259,69 @@ export const template = ({
       element.textContent = isShowing ? 'Show API details' : 'Hide API details';
     }
 
-    document.addEventListener('DOMContentLoaded', () => {
-      const failedTests = document.querySelectorAll('.test-name.failed');
-      failedTests.forEach(test => {
+    function setFilter(filter) {
+      document.querySelectorAll('.stat').forEach(stat => {
+        stat.classList.remove('active-filter');
       });
+      if (filter) {
+        document.querySelector('.stat.' + filter).classList.add('active-filter');
+      } else {
+        document.querySelector('.stat.total').classList.add('active-filter');
+      }
+
+      document.querySelectorAll('.test-case').forEach(tc => {
+        const nameDiv = tc.querySelector('.test-name');
+        if (!filter || nameDiv.classList.contains(filter)) {
+          tc.style.display = '';
+        } else {
+          tc.style.display = 'none';
+        }
+      });
+
+      function updateDescribeVisibility(describe) {
+        let hasVisible = false;
+        const content = describe.querySelector(':scope > .describe-content');
+        if (content) {
+          content.childNodes.forEach(child => {
+            if (child.nodeType !== 1) return; // skip non-elements
+            if (child.classList.contains('describe-group')) {
+              if (updateDescribeVisibility(child)) {
+                child.style.display = '';
+                hasVisible = true;
+              } else {
+                child.style.display = 'none';
+              }
+            } else if (child.classList.contains('test-case')) {
+              if (child.style.display !== 'none') {
+                hasVisible = true;
+              }
+            }
+          });
+        }
+        describe.style.display = hasVisible ? '' : 'none';
+        return hasVisible;
+      }
+      document.querySelectorAll('.describe-group').forEach(group => {
+        updateDescribeVisibility(group);
+      });
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      document.querySelector('.stat.total').addEventListener('click', () => setFilter(null));
+      document.querySelector('.stat.passed').addEventListener('click', () => setFilter('passed'));
+      document.querySelector('.stat.failed').addEventListener('click', () => setFilter('failed'));
+      document.querySelector('.stat.todo').addEventListener('click', () => setFilter('todo'));
+      document.querySelector('.stat.total').classList.add('active-filter');
     });
   </script>
+  <style>
+    .stat.active-filter {
+      outline: 2px solid #1976d2;
+      box-shadow: 0 0 0 2px #1976d233;
+      cursor: pointer;
+    }
+    .stat { cursor: pointer; }
+  </style>
 </body>
 </html>
 `

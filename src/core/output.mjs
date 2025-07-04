@@ -53,3 +53,38 @@ export const printNewLine = () => console.log('')
 export const printTags = (tags) => {
   console.log('Using tags:' + EOL, tags)
 }
+
+const createFullDescription = ({ name, describeStack }) =>
+  [...describeStack, { name }]
+    .map(({ name }) => `<bold>${name}</bold>`)
+    .join(' → ')
+
+export const printFailureMsg = (failure) => {
+  console.error(applyColor(createFullDescription(failure)))
+  printNewLine()
+  failure.errors.forEach((error) => {
+    console.error(error.message)
+    console.error(error.stack)
+  })
+  printNewLine()
+}
+
+export const printFailuresMsg = (failures) => {
+  if (failures.length > 0) {
+    printNewLine()
+    console.error('Failures:')
+    printNewLine()
+  }
+  failures.forEach(printFailureMsg)
+}
+
+export const printTestResult = (failures, successes) => {
+  printNewLine()
+  console.log(
+    applyColor(
+      `Tests: <green>${successes} passed</green>, ` +
+        `<red>${failures.length} failed</red>, ` +
+        `${successes + failures.length} total`
+    )
+  )
+}

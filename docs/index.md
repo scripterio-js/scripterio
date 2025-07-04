@@ -134,6 +134,8 @@ Use `expect(actual_value)` with assertions:
 
 `skip()`  Declares a skipped test or test group. Test/s is/are never run.
 
+`only()`  Declares an exclusive test or test group that will be executed. If used, all other tests are skipped.
+
 ### `Example↓`
 
 
@@ -141,6 +143,16 @@ Use `expect(actual_value)` with assertions:
 test.skip('description', () => {})
 //or
 describe.skip('description', () => {})
+```
+
+```js
+test.only('description', () => {
+  // Body of the only test that will be executed
+})
+//or
+describe.only('description', () => {
+  // Body of the only test group that will be executed
+})
 ```
 
 ---

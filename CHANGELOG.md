@@ -6,6 +6,29 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## Unreleased
+### Added
+- Based on [Add `only` as an annotation for `describe`/`test`](https://github.com/scripterio-js/scripterio/issues/14):
+  - Exclusive execution for tests:
+    - `describe.only()` — Runs only this `describe` block; all others are skipped.
+    - `test.only()` — Runs only this test; all others are skipped.
+- Based on [Add `todo` as an annotation for `describe`/`test`](https://github.com/scripterio-js/scripterio/issues/46):
+  - Mark tests as pending to help plan and organize future work. Pending tests are not executed.
+    - `describe.todo()` — Marks a test group as "to-do."
+    - `test.todo()` — Marks a test as "to-do."
+- Added test execution time to the HTML report.
+- Added a filter to the HTML report for quick navigation.
+- Based on [Review & Add additional unit tests](https://github.com/scripterio-js/scripterio/issues/58):
+  - Added unit tests for:
+    - `config.mjs`
+    - `setup.mjs`
+
+- Contributors:
+  - [Vadym Nastoiashchyi](https://github.com/VadimNastoyashchy)
+  - [Oleh Babenko](https://github.com/OlehBabenkoo)
+
+### Changed
+- Updated documentation
+- Refactored core components
 
 ## 1.10.0 - 2025-06-22
 ### Added

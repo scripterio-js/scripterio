@@ -37,15 +37,55 @@ export const template = ({
   <style>
     body { font-family: system-ui, -apple-system, sans-serif; background: #f5f5f5; margin: 0; padding: 2rem; }
     .container { max-width: 1200px; margin: 0 auto; background: #fff; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.08); padding: 2rem; }
-    .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; }
-    .main-flex { display: flex; align-items: center; gap: 3rem; margin-bottom: 0.5rem; }
-    .pie-chart-container { position: relative; width: 200px; height: 200px; background: #fff; border-radius: 50%; box-shadow: 0 2px 8px rgba(0,0,0,0.07); display: flex; align-items: center; justify-content: center; }
+    .header { margin-bottom: 0.5rem; }
+    .header-row { display: flex; justify-content: space-between; align-items: flex-end; gap: 2rem; }
+    .main-flex { display: flex; align-items: flex-start; gap: 3rem; margin-bottom: 0.5rem; }
+    .pie-chart-container { 
+      position: relative; 
+      width: 260px; 
+      height: 260px; 
+      background: transparent; 
+      display: flex; 
+      align-items: center; 
+      justify-content: center; 
+    }
+    .pie-center-label {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      color: #222;
+      background: transparent;
+      border-radius: 50%;
+      width: 110px;
+      height: 110px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      font-weight: bold;
+      box-shadow: none;
+      pointer-events: none;
+      z-index: 2;
+      text-align: center;
+      transition: background 0.2s;
+      user-select: none;
+    }
+    .pie-center-label .desc {
+      font-size: 1.05rem;
+      font-weight: 500;
+      opacity: 0.85;
+      margin-top: 0.3em;
+      letter-spacing: 0.02em;
+      color: #222;
+    }
     .summary-tiles {
       display: flex;
       flex-direction: row;
       gap: 1.2rem;
       align-items: center;
-      justify-content: center;
+      justify-content: flex-start;
       height: 200px;
     }
     .stat {
@@ -60,7 +100,7 @@ export const template = ({
       justify-content: center;
       height: 70px;
       cursor: pointer;
-      transition: box-shadow 0.2s;
+      transition: box-shadow 0.2s, border 0.2s;
       border: 2px solid transparent;
     }
     .stat-percent {
@@ -73,8 +113,9 @@ export const template = ({
       box-shadow: 0 2px 8px rgba(33,150,243,0.13);
       border: 2px solid #2196f3;
       background: #e3f2fd;
+      z-index: 1;
     }
-    .stat.total { background: #e3f2fd; cursor: default; border: 2px solid transparent; }
+    .stat.total { background: #e3f2fd; cursor: pointer; border: 2px solid transparent; }
     .stat.passed { background: #e8f5e9; }
     .stat.failed { background: #ffebee; }
     .stat.todo { background: #fff3e0; }
@@ -115,25 +156,27 @@ export const template = ({
     .api-table th { background: #f3f4f6; font-weight: 600; }
     pre.api-data { margin: 0.5rem 0; padding: 0.5rem; background: #f5f5f5; border-radius: 4px; max-height: 200px; overflow-y: auto; white-space: pre-wrap; }
     .hidden { display: none !important; }
+    .stat.active-filter {
+      outline: 2px solid #2196f3;
+      box-shadow: 0 0 0 2px #1976d233;
+      cursor: pointer;
+    }
+    .stat { cursor: pointer; }
   </style>
 </head>
 <body>
   <div class="container">
     <div class="header">
-      <h1>Test Report</h1>
-      <div>${new Date().toLocaleString()}</div>
+      <div class="header-row">
+        <h1>Test Report</h1>
+        <div>${new Date().toLocaleString()}</div>
+      </div>
     </div>
     <div class="main-flex">
-      <div>
-        <div class="pie-chart-container">
-          <canvas id="pieChart" width="200" height="200"></canvas>
-        </div>
-      </div>
       <div class="summary-tiles">
         <div class="stat total" data-filter="all">
           <h3>Total</h3>
           <p>${numTests}</p>
-          <div class="stat-percent" style="color:#2196f3;">${getPercent(numTests, numTests)}%</div>
         </div>
         <div class="stat passed" data-filter="passed">
           <h3>Passed</h3>
@@ -151,6 +194,15 @@ export const template = ({
           <div class="stat-percent" style="color:#ff9800;">${getPercent(numTodo, numTests)}%</div>
         </div>
       </div>
+      <div>
+        <div class="pie-chart-container">
+          <canvas id="pieChart" width="260" height="260" style="cursor:pointer"></canvas>
+          <div class="pie-center-label" id="pieCenterLabel">
+            ${numTests}
+            <div class="desc">Total tests</div>
+          </div>
+        </div>
+      </div>
     </div>
     <div class="results" id="results-root">
       ${renderDescribeGroup(groupByDescribe(results))}
@@ -159,43 +211,163 @@ export const template = ({
   <script>
     (function() {
       const data = [
-        { value: ${numPassed}, color: '#4caf50' },
-        { value: ${numFailed}, color: '#f44336' },
-        { value: ${numTodo}, color: '#ff9800' }
+        { value: ${numPassed}, solid: '#4caf50', label: 'Passed', percent: ${getPercent(numPassed, numTests)}, filter: 'passed' },
+        { value: ${numFailed}, solid: '#f44336', label: 'Failed', percent: ${getPercent(numFailed, numTests)}, filter: 'failed' },
+        { value: ${numTodo}, solid: '#ff9800', label: 'Todo', percent: ${getPercent(numTodo, numTests)}, filter: 'todo' }
       ];
       const total = ${numTests};
       const canvas = document.getElementById('pieChart');
+      const centerLabel = document.getElementById('pieCenterLabel');
       if (!canvas) return;
       const ctx = canvas.getContext('2d');
       const centerX = canvas.width / 2;
       const centerY = canvas.height / 2;
-      const radius = 90;
-      let startAngle = -0.5 * Math.PI;
+      const radius = 120;
       const totalValue = data.reduce((sum, d) => sum + d.value, 0);
-      data.forEach((d) => {
+      const segments = [];
+      let startAngle = -0.5 * Math.PI;
+      data.forEach((d, i) => {
         if (d.value > 0) {
           const slice = (d.value / totalValue) * 2 * Math.PI;
+          ctx.save();
           ctx.beginPath();
           ctx.moveTo(centerX, centerY);
           ctx.arc(centerX, centerY, radius, startAngle, startAngle + slice);
           ctx.closePath();
-          ctx.fillStyle = d.color;
-          ctx.globalAlpha = 0.92;
+          ctx.fillStyle = d.solid;
+          ctx.globalAlpha = 0.97;
           ctx.fill();
           ctx.globalAlpha = 1;
+          ctx.restore();
+          segments.push({
+            start: startAngle,
+            end: startAngle + slice,
+            color: d.solid,
+            label: d.label,
+            percent: d.percent,
+            index: i,
+            filter: d.filter
+          });
           startAngle += slice;
         }
       });
-    })();
 
-    document.querySelectorAll('.stat[data-filter]').forEach(tile => {
-      tile.addEventListener('click', function() {
-        document.querySelectorAll('.stat[data-filter]').forEach(t => t.classList.remove('active'));
-        this.classList.add('active');
-        const filter = this.getAttribute('data-filter');
-        filterResults(filter);
+      let hoveredIndex = null;
+      let selectedFilter = 'all';
+
+      function redrawPie(highlightIndex = null, selected = null) {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        let sa = -0.5 * Math.PI;
+        data.forEach((d, i) => {
+          if (d.value > 0) {
+            const slice = (d.value / totalValue) * 2 * Math.PI;
+            ctx.save();
+            ctx.beginPath();
+            ctx.moveTo(centerX, centerY);
+            ctx.arc(centerX, centerY, radius, sa, sa + slice);
+            ctx.closePath();
+            ctx.fillStyle = d.solid;
+            if (selected === d.filter) {
+              ctx.globalAlpha = 1;
+              ctx.shadowColor = d.solid;
+              ctx.shadowBlur = 18;
+            } else if (highlightIndex === i) {
+              ctx.globalAlpha = 0.85;
+              ctx.shadowColor = d.solid;
+              ctx.shadowBlur = 10;
+            } else {
+              ctx.globalAlpha = 0.6;
+              ctx.shadowBlur = 0;
+            }
+            ctx.fill();
+            ctx.shadowBlur = 0;
+            ctx.globalAlpha = 1;
+            ctx.restore();
+            sa += slice;
+          }
+        });
+      }
+
+      function setPieLabel(filter) {
+        if (filter === 'all') {
+          centerLabel.innerHTML = '<span style="color:#222">${numTests}</span><div class="desc" style="color:#222">Total tests</div>';
+        } else {
+          const seg = data.find(d => d.filter === filter);
+          if (seg) {
+            centerLabel.innerHTML = '<span style="color:#222">' + seg.percent + '%</span><div class="desc" style="color:#222">' + seg.label + '</div>';
+          }
+        }
+      }
+
+      canvas.addEventListener('mousemove', function(e) {
+        const rect = canvas.getBoundingClientRect();
+        const x = e.clientX - rect.left - centerX;
+        const y = e.clientY - rect.top - centerY;
+        const angle = Math.atan2(y, x);
+        const dist = Math.sqrt(x * x + y * y);
+        let found = false;
+        if (dist <= radius && dist > 40) {
+          let a = angle;
+          if (a < -0.5 * Math.PI) a += 2 * Math.PI;
+          for (const seg of segments) {
+            if (a >= seg.start && a < seg.end) {
+              hoveredIndex = seg.index;
+              redrawPie(seg.index, selectedFilter !== 'all' ? selectedFilter : null);
+              if (selectedFilter === 'all') setPieLabel(seg.filter);
+              canvas.style.cursor = "pointer";
+              found = true;
+              break;
+            }
+          }
+        }
+        if (!found) {
+          hoveredIndex = null;
+          redrawPie(null, selectedFilter !== 'all' ? selectedFilter : null);
+          setPieLabel(selectedFilter);
+          canvas.style.cursor = "pointer";
+        }
       });
-    });
+
+      canvas.addEventListener('mouseleave', function() {
+        hoveredIndex = null;
+        redrawPie(null, selectedFilter !== 'all' ? selectedFilter : null);
+        setPieLabel(selectedFilter);
+        canvas.style.cursor = "pointer";
+      });
+
+      // Видалено click-фільтрацію по кругу
+
+      redrawPie(null, selectedFilter);
+      setPieLabel(selectedFilter);
+
+      document.querySelectorAll('.stat[data-filter]').forEach(tile => {
+        tile.addEventListener('click', function() {
+          document.querySelectorAll('.stat[data-filter]').forEach(t => t.classList.remove('active'));
+          this.classList.add('active');
+          const filter = this.getAttribute('data-filter');
+          selectedFilter = filter;
+          redrawPie(null, filter !== 'all' ? filter : null);
+          setPieLabel(filter);
+          filterResults(filter);
+
+          if (filter !== 'all') {
+            setTimeout(() => {
+              const root = document.getElementById('results-root');
+              if (!root) return;
+              const first = root.querySelector('.test-case .test-name.' + filter);
+              if (first) {
+                first.scrollIntoView({ behavior: 'smooth', block: 'center' });
+              }
+            }, 100);
+          }
+        });
+      });
+
+      document.querySelectorAll('.stat[data-filter]').forEach(t => t.classList.remove('active'));
+      document.querySelector('.stat.total').classList.add('active');
+      redrawPie(null, 'all');
+      setPieLabel('all');
+    })();
 
     function filterResults(filter) {
       const root = document.getElementById('results-root');
@@ -226,8 +398,6 @@ export const template = ({
       });
     }
   
-    document.querySelector('.stat.total').classList.add('active');
-
     function toggleDescribeContent(element) {
       const content = element.nextElementSibling;
       content.classList.toggle('hide');
@@ -271,7 +441,7 @@ export const template = ({
         const content = describe.querySelector(':scope > .describe-content');
         if (content) {
           content.childNodes.forEach(child => {
-            if (child.nodeType !== 1) return; // skip non-elements
+            if (child.nodeType !== 1) return;
             if (child.classList.contains('describe-group')) {
               if (updateDescribeVisibility(child)) {
                 child.style.display = '';
@@ -299,17 +469,10 @@ export const template = ({
       document.querySelector('.stat.passed').addEventListener('click', () => setFilter('passed'));
       document.querySelector('.stat.failed').addEventListener('click', () => setFilter('failed'));
       document.querySelector('.stat.todo').addEventListener('click', () => setFilter('todo'));
-      document.querySelector('.stat.total').classList.add('active-filter');
+      document.querySelectorAll('.stat[data-filter]').forEach(t => t.classList.remove('active'));
+      document.querySelector('.stat.total').classList.add('active');
     });
   </script>
-  <style>
-    .stat.active-filter {
-      outline: 2px solid #1976d2;
-      box-shadow: 0 0 0 2px #1976d233;
-      cursor: pointer;
-    }
-    .stat { cursor: pointer; }
-  </style>
 </body>
 </html>
 `

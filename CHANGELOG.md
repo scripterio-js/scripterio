@@ -7,19 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 ### Added
-- Based on [Add `only` as an annotation for the `describe/test`](https://github.com/scripterio-js/scripterio/issues/14):
-  - Retry functionality for tests:
-    - `describe.only()`  Declares an exclusive `describe` that will be executed. If used, all other describes are skipped.
-    - `test.only()`  Declares an exclusive `test` that will be executed. If used, all other tests are skipped.
-- Based on [Add `todo` as an annotation for the `describe/test`](https://github.com/scripterio-js/scripterio/issues/46)
-  - The test(s) is/are marked as pending and will not be executed. Helpful for planning and organizing future tests.
-    - `describe.todo()`  Declares a test group as "to-do." 
-    - `test.todo()`  Declares a test as "to-do." 
-- Added test time execution to the `HTML` report:
-- Based on [Review&Add additional `unit-tests`](https://github.com/scripterio-js/scripterio/issues/58)
+- Based on [Add `only` as an annotation for `describe`/`test`](https://github.com/scripterio-js/scripterio/issues/14):
+  - Exclusive execution for tests:
+    - `describe.only()` — Runs only this `describe` block; all others are skipped.
+    - `test.only()` — Runs only this test; all others are skipped.
+- Based on [Add `todo` as an annotation for `describe`/`test`](https://github.com/scripterio-js/scripterio/issues/46):
+  - Mark tests as pending to help plan and organize future work. Pending tests are not executed.
+    - `describe.todo()` — Marks a test group as "to-do."
+    - `test.todo()` — Marks a test as "to-do."
+- Added test execution time to the HTML report.
+- Added a filter to the HTML report for quick navigation.
+- Based on [Review & Add additional unit tests](https://github.com/scripterio-js/scripterio/issues/58):
   - Added unit tests for:
-    -`config.mjs`
-    -`setup.mjs`
+    - `config.mjs`
+    - `setup.mjs`
 
 - Contributors:
   - [Vadym Nastoiashchyi](https://github.com/VadimNastoyashchy)

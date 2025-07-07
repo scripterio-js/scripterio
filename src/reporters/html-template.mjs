@@ -37,33 +37,100 @@ export const template = ({
   <style>
     body { font-family: system-ui, -apple-system, sans-serif; background: #f5f5f5; margin: 0; padding: 2rem; }
     .container { max-width: 1200px; margin: 0 auto; background: #fff; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.08); padding: 2rem; }
-    .header { margin-bottom: 0.5rem; }
-    .header-row { display: flex; justify-content: space-between; align-items: flex-end; gap: 2rem; }
-    .main-flex { display: flex; align-items: flex-start; gap: 3rem; margin-bottom: 0.5rem; }
-    .pie-chart-container { 
-      position: relative; 
-      width: 260px; 
-      height: 260px; 
-      background: transparent; 
+    .main-flex { 
       display: flex; 
-      align-items: center; 
-      justify-content: center; 
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0;
+      margin-bottom: 0.5rem; 
     }
-    .pie-center-label {
-      position: absolute;
-      left: 50%;
-      top: 50%;
-      transform: translate(-50%, -50%);
-      color: #222;
-      background: transparent;
-      border-radius: 50%;
-      width: 110px;
-      height: 110px;
+    .main-flex-row {
+      display: flex;
+      flex-direction: row;
+      align-items: flex-end;
+      justify-content: space-between;
+      width: 100%;
+      margin-bottom: 2.5rem;
+    }
+    .main-flex-left {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: flex-start;
+      min-width: 260px;
+      flex: 1 1 0;
+      max-width: 480px;
+    }
+    .header-block {
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: flex-start;
+      min-width: 200px;
+      margin-bottom: 0.7rem;
+    }
+    .summary-tiles {
+      display: flex;
+      flex-direction: row;
+      gap: 1.2rem;
+      align-items: flex-start;
+      justify-content: flex-start;
+      width: 100%;
+      margin-top: 0;
+      margin-bottom: 0;
+    }
+    .stat {
+      padding: 1.1rem 1.5rem;
+      border-radius: 14px;
+      min-width: 110px;
+      background: #f5f5f5;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      font-size: 2rem;
+      height: 70px;
+      cursor: pointer;
+      transition: box-shadow 0.2s, border 0.2s;
+      border: 2px solid transparent;
+      font-size: 1em;
+    }
+    .stat h3 { margin: 0 0 0.3em 0; font-size: 1.1em; font-weight: 600; }
+    .stat p { margin: 0; font-size: 2rem; font-weight: bold; }
+    .stat-percent {
+      font-size: 1.1em;
+      font-weight: 600;
+      margin-top: 0.3em;
+      text-align: center;
+    }
+    .pie-chart-container { 
+      position: relative; 
+      width: 270px; 
+      height: 270px; 
+      background: transparent; 
+      display: flex; 
+      align-items: flex-end;
+      justify-content: flex-start;
+      margin-left: -60px;
+      margin-bottom: -30px;
+      margin-top: 0;
+      flex-shrink: 0;
+    }
+    .pie-center-label {
+      position: absolute;
+      left: 50%;
+      top: 54%;
+      transform: translate(-50%, -50%);
+      color: #222;
+      background: transparent;
+      border-radius: 50%;
+      width: 120px;
+      height: 120px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.8rem;
       font-weight: bold;
       box-shadow: none;
       pointer-events: none;
@@ -76,38 +143,9 @@ export const template = ({
       font-size: 1.05rem;
       font-weight: 500;
       opacity: 0.85;
-      margin-top: 0.3em;
+      margin-top: 0.2em;
       letter-spacing: 0.02em;
       color: #222;
-    }
-    .summary-tiles {
-      display: flex;
-      flex-direction: row;
-      gap: 1.2rem;
-      align-items: center;
-      justify-content: flex-start;
-      height: 200px;
-    }
-    .stat {
-      padding: 1.2rem 1.5rem;
-      border-radius: 12px;
-      min-width: 120px;
-      background: #f5f5f5;
-      box-shadow: 0 1px 2px rgba(0,0,0,0.03);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 70px;
-      cursor: pointer;
-      transition: box-shadow 0.2s, border 0.2s;
-      border: 2px solid transparent;
-    }
-    .stat-percent {
-      font-size: 1.1em;
-      font-weight: 600;
-      margin-top: 0.3em;
-      text-align: center;
     }
     .stat.active {
       box-shadow: 0 2px 8px rgba(33,150,243,0.13);
@@ -119,8 +157,6 @@ export const template = ({
     .stat.passed { background: #e8f5e9; }
     .stat.failed { background: #ffebee; }
     .stat.todo { background: #fff3e0; }
-    .stat h3 { margin: 0 0 0.3em 0; font-size: 1.1em; font-weight: 600; }
-    .stat p { margin: 0; font-size: 2rem; font-weight: bold; }
     .stat.passed h3, .stat.passed p { color: #4caf50; }
     .stat.failed h3, .stat.failed p { color: #f44336; }
     .stat.todo h3, .stat.todo p { color: #ff9800; }
@@ -166,37 +202,37 @@ export const template = ({
 </head>
 <body>
   <div class="container">
-    <div class="header">
-      <div class="header-row">
-        <h1>Test Report</h1>
-        <div>${new Date().toLocaleString()}</div>
-      </div>
-    </div>
     <div class="main-flex">
-      <div class="summary-tiles">
-        <div class="stat total" data-filter="all">
-          <h3>Total</h3>
-          <p>${numTests}</p>
+      <div class="main-flex-row">
+        <div class="main-flex-left">
+          <div class="header-block">
+            <h1 style="margin:0 0 1.2rem 0;">Test Report</h1>
+            <div class="report-date" style="margin-bottom:1.2rem;">${new Date().toLocaleString()}</div>
+          </div>
+          <div class="summary-tiles">
+            <div class="stat total" data-filter="all">
+              <h3>Total</h3>
+              <p>${numTests}</p>
+            </div>
+            <div class="stat passed" data-filter="passed">
+              <h3>Passed</h3>
+              <p>${numPassed}</p>
+              <div class="stat-percent" style="color:#4caf50;">${getPercent(numPassed, numTests)}%</div>
+            </div>
+            <div class="stat failed" data-filter="failed">
+              <h3>Failed</h3>
+              <p>${numFailed}</p>
+              <div class="stat-percent" style="color:#f44336;">${getPercent(numFailed, numTests)}%</div>
+            </div>
+            <div class="stat todo" data-filter="todo">
+              <h3>Todo</h3>
+              <p>${numTodo}</p>
+              <div class="stat-percent" style="color:#ff9800;">${getPercent(numTodo, numTests)}%</div>
+            </div>
+          </div>
         </div>
-        <div class="stat passed" data-filter="passed">
-          <h3>Passed</h3>
-          <p>${numPassed}</p>
-          <div class="stat-percent" style="color:#4caf50;">${getPercent(numPassed, numTests)}%</div>
-        </div>
-        <div class="stat failed" data-filter="failed">
-          <h3>Failed</h3>
-          <p>${numFailed}</p>
-          <div class="stat-percent" style="color:#f44336;">${getPercent(numFailed, numTests)}%</div>
-        </div>
-        <div class="stat todo" data-filter="todo">
-          <h3>Todo</h3>
-          <p>${numTodo}</p>
-          <div class="stat-percent" style="color:#ff9800;">${getPercent(numTodo, numTests)}%</div>
-        </div>
-      </div>
-      <div>
         <div class="pie-chart-container">
-          <canvas id="pieChart" width="260" height="260" style="cursor:pointer"></canvas>
+          <canvas id="pieChart" width="270" height="270" style="cursor:pointer"></canvas>
           <div class="pie-center-label" id="pieCenterLabel">
             ${numTests}
             <div class="desc">Total tests</div>
@@ -222,7 +258,7 @@ export const template = ({
       const ctx = canvas.getContext('2d');
       const centerX = canvas.width / 2;
       const centerY = canvas.height / 2;
-      const radius = 120;
+      const radius = 105;
       const totalValue = data.reduce((sum, d) => sum + d.value, 0);
       const segments = [];
       let startAngle = -0.5 * Math.PI;
@@ -334,8 +370,6 @@ export const template = ({
         setPieLabel(selectedFilter);
         canvas.style.cursor = "pointer";
       });
-
-      // Видалено click-фільтрацію по кругу
 
       redrawPie(null, selectedFilter);
       setPieLabel(selectedFilter);

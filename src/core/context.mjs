@@ -167,6 +167,7 @@ const runTest = async (test) => {
   const startTimeStamp = timeStamp()
   if (test.todo) {
     result.numTodo++
+    result.numTests++
     console.log(
       indent(applyColor(`<yellow>◦</yellow> ${currentTest.name} (TODO)`))
     )

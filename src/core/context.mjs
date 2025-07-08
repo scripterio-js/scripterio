@@ -9,6 +9,7 @@ import {
 } from '../utils/transform.mjs'
 import { printNewLine, printSkippedMsg } from './output.mjs'
 import { getConfig } from '../config/config.mjs'
+import { timeStamp } from '../utils/support.mjs'
 
 const config = getConfig()
 const failures = []
@@ -25,6 +26,7 @@ export const result = {
   numTests: 0,
   numPassed: 0,
   numFailed: 0,
+  numTodo: 0,
   results: [],
 }
 
@@ -47,28 +49,59 @@ const makeTest = (name, body, timeout = defaultTimeout, tags = [], retry) => ({
 
 currentDescribe = makeDescribe('root')
 
-export const describe = (name, optionsOrBody, body) => {
+const handleDescribe = (name, optionsOrBody, body, extra = {}) => {
   const options = typeof optionsOrBody === 'object' ? optionsOrBody : {}
   const actualBody = typeof optionsOrBody === 'function' ? optionsOrBody : body
   const parentDescribe = currentDescribe
-  currentDescribe = makeDescribe(name, options)
-  actualBody()
+  currentDescribe = makeDescribe(name, { ...options, ...extra })
+  if (!extra.todo) actualBody?.()
   currentDescribe = {
     ...parentDescribe,
     children: [...parentDescribe.children, currentDescribe],
   }
 }
 
-export const test = (name, optionsOrBody, body) => {
+export const describe = (name, optionsOrBody, body) => {
+  handleDescribe(name, optionsOrBody, body)
+}
+
+describe.only = (name, optionsOrBody, body) => {
+  handleDescribe(name, optionsOrBody, body, { focus: true })
+}
+describe.todo = (name, optionsOrBody, body) => {
+  handleDescribe(name, optionsOrBody, body, { todo: true })
+}
+
+const handleTest = (name, optionsOrBody, body, extra = {}) => {
   const options = typeof optionsOrBody === 'object' ? optionsOrBody : {}
   const actualBody = typeof optionsOrBody === 'function' ? optionsOrBody : body
   currentDescribe = {
     ...currentDescribe,
     children: [
       ...currentDescribe.children,
-      makeTest(name, actualBody, options.timeout, options.tags, options.retry),
+      {
+        ...makeTest(
+          name,
+          extra.todo ? () => {} : actualBody,
+          options.timeout,
+          options.tags,
+          options.retry
+        ),
+        ...extra,
+      },
     ],
   }
+}
+
+export const test = (name, optionsOrBody, body) => {
+  handleTest(name, optionsOrBody, body)
+}
+
+test.only = (name, optionsOrBody, body) => {
+  handleTest(name, optionsOrBody, body, { focus: true })
+}
+test.todo = (name, optionsOrBody, body) => {
+  handleTest(name, optionsOrBody, body, { todo: true })
 }
 
 export const skip = (name) => {
@@ -130,6 +163,16 @@ const runTest = async (test) => {
   let passed = false
   global.currentTest = test
   currentTest.describeStack = [...describeStack]
+
+  const startTimeStamp = timeStamp()
+  if (test.todo) {
+    result.numTodo++
+    result.numTests++
+    console.log(
+      indent(applyColor(`<yellow>◦</yellow> ${currentTest.name} (TODO)`))
+    )
+  }
+
   while (attempts <= maxRetries && !passed) {
     if (attempts > 0) {
       console.log(
@@ -155,6 +198,8 @@ const runTest = async (test) => {
     }
     attempts++
   }
+
+  const endTimeStamp = timeStamp()
   if (!passed) {
     result.numFailed++
     console.log(indent(applyColor(`<red>✗</red> ${currentTest.name}`)))
@@ -166,6 +211,7 @@ const runTest = async (test) => {
   }
   result.numTests++
   result.results.push(currentTest)
+  currentTest.duration = endTimeStamp - startTimeStamp
   global.currentTest = null
 }
 

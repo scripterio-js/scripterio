@@ -21,7 +21,13 @@ const formatJson = (data) => {
   }
 }
 
-export const template = ({ numTests, numPassed, numFailed, results }) => {
+export const template = ({
+  numTests,
+  numPassed,
+  numFailed,
+  numTodo,
+  results,
+}) => {
   return `
 <!DOCTYPE html>
 <html>
@@ -115,6 +121,18 @@ export const template = ({ numTests, numPassed, numFailed, results }) => {
       border-radius: 4px;
       overflow-x: auto;
     }
+      
+    .test-name.todo::before {
+      content: '◦';
+      color: #ff9800;
+    }
+    .test-name.todo {
+      color: #ff9800;
+      font-style: italic;
+    }
+
+    .stat.todo { background: #fff3e0; }
+    .stat.todo h3, .stat.todo p { color: #ff9800; }
     .describe-group {
       margin: 0.5rem 0;
       padding: 0 1rem;
@@ -210,6 +228,10 @@ export const template = ({ numTests, numPassed, numFailed, results }) => {
         <h3>Failed</h3>
         <p>${numFailed}</p>
       </div>
+      <div class="stat todo">
+        <h3>Todo</h3>
+        <p>${numTodo}</p>
+      </div>
     </div>
 
     <div class="results">
@@ -237,12 +259,69 @@ export const template = ({ numTests, numPassed, numFailed, results }) => {
       element.textContent = isShowing ? 'Show API details' : 'Hide API details';
     }
 
-    document.addEventListener('DOMContentLoaded', () => {
-      const failedTests = document.querySelectorAll('.test-name.failed');
-      failedTests.forEach(test => {
+    function setFilter(filter) {
+      document.querySelectorAll('.stat').forEach(stat => {
+        stat.classList.remove('active-filter');
       });
+      if (filter) {
+        document.querySelector('.stat.' + filter).classList.add('active-filter');
+      } else {
+        document.querySelector('.stat.total').classList.add('active-filter');
+      }
+
+      document.querySelectorAll('.test-case').forEach(tc => {
+        const nameDiv = tc.querySelector('.test-name');
+        if (!filter || nameDiv.classList.contains(filter)) {
+          tc.style.display = '';
+        } else {
+          tc.style.display = 'none';
+        }
+      });
+
+      function updateDescribeVisibility(describe) {
+        let hasVisible = false;
+        const content = describe.querySelector(':scope > .describe-content');
+        if (content) {
+          content.childNodes.forEach(child => {
+            if (child.nodeType !== 1) return; // skip non-elements
+            if (child.classList.contains('describe-group')) {
+              if (updateDescribeVisibility(child)) {
+                child.style.display = '';
+                hasVisible = true;
+              } else {
+                child.style.display = 'none';
+              }
+            } else if (child.classList.contains('test-case')) {
+              if (child.style.display !== 'none') {
+                hasVisible = true;
+              }
+            }
+          });
+        }
+        describe.style.display = hasVisible ? '' : 'none';
+        return hasVisible;
+      }
+      document.querySelectorAll('.describe-group').forEach(group => {
+        updateDescribeVisibility(group);
+      });
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      document.querySelector('.stat.total').addEventListener('click', () => setFilter(null));
+      document.querySelector('.stat.passed').addEventListener('click', () => setFilter('passed'));
+      document.querySelector('.stat.failed').addEventListener('click', () => setFilter('failed'));
+      document.querySelector('.stat.todo').addEventListener('click', () => setFilter('todo'));
+      document.querySelector('.stat.total').classList.add('active-filter');
     });
   </script>
+  <style>
+    .stat.active-filter {
+      outline: 2px solid #1976d2;
+      box-shadow: 0 0 0 2px #1976d233;
+      cursor: pointer;
+    }
+    .stat { cursor: pointer; }
+  </style>
 </body>
 </html>
 `
@@ -319,34 +398,37 @@ export const template = ({ numTests, numPassed, numFailed, results }) => {
           return content
             .map(
               (test) => `
-            <div class="test-case" style="padding-left: ${padding}px">
-              <div class="test-name ${
-                test.errors.length ? 'failed' : 'passed'
-              }">
-                ${test.name}
-              </div>
-              ${
-                test.errors.length
-                  ? `
-                <a class="toggle-error" onclick="toggleError(this)">Show error details</a>
-                <div class="error-details">
-                  ${test.errors
-                    .map(
-                      (error) => `
-                    <div class="error">
-                      <pre>${stripAnsi(error.message)}</pre>
-                      <pre>${stripAnsi(error.stack)}</pre>
-                    </div>
-                  `
-                    )
-                    .join('')}
-                </div>
-              `
-                  : ''
-              }
-              ${test.apiDetails ? renderApiDetails(test.apiDetails) : ''}
+      <div class="test-case" style="padding-left: ${padding}px">
+      <div class="test-name ${
+        test.todo ? 'todo' : test.errors.length ? 'failed' : 'passed'
+      }">
+        ${test.name}${test.todo ? ' (TODO)' : ''}
+        <span style="color:#888; font-size:0.95em; margin-left:0.5em;">${
+          typeof test.duration === 'number' ? `${test.duration} ms` : ''
+        }</span>
+      </div>
+      ${
+        test.errors.length
+          ? `
+        <a class="toggle-error" onclick="toggleError(this)">Show error details</a>
+        <div class="error-details">
+          ${test.errors
+            .map(
+              (error) => `
+            <div class="error">
+              <pre>${stripAnsi(error.message)}</pre>
+              <pre>${stripAnsi(error.stack)}</pre>
             </div>
           `
+            )
+            .join('')}
+              </div>
+            `
+          : ''
+      }
+            ${test.apiDetails ? renderApiDetails(test.apiDetails) : ''}
+          </div>
+        `
             )
             .join('')
         }

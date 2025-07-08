@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## Unreleased
+
+## 1.11.0 - 2025-07-08
 ### Added
 - Based on [Add `only` as an annotation for `describe`/`test`](https://github.com/scripterio-js/scripterio/issues/14):
   - Exclusive execution for tests:
@@ -21,7 +23,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Added unit tests for:
     - `config.mjs`
     - `setup.mjs`
-
 - Contributors:
   - [Vadym Nastoiashchyi](https://github.com/VadimNastoyashchy)
   - [Oleh Babenko](https://github.com/OlehBabenkoo)

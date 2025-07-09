@@ -340,6 +340,26 @@ type Assertions = {
    * ```
    */
   toMatch: (expected: any) => void
+
+  /**
+   * Use .toBeTypeOf() to check that a variable has a correct type
+   *
+   * **Usage**
+   *
+   * ```js
+   *  expect('Hello').toBeTypeOf('string')
+   *  expect(['ScripterI/O', 123]).toBeTypeOf('array')
+   *  expect(42).toBeTypeOf('number')
+   *  expect(true).toBeTypeOf('boolean')
+   *  expect({ key: 'value' }).toBeTypeOf('object')
+   *  expect(undefined).toBeTypeOf('undefined')
+   *  expect(null).toBeTypeOf('null')
+   *  expect(Symbol('sym')).toBeTypeOf('symbol')
+   *  expect(10n).toBeTypeOf('bigint')
+   *  expect(function () {}).toBeTypeOf('function')
+   * ```
+   */
+  toBeTypeOf: (expected: any) => void
 }
 
 /**

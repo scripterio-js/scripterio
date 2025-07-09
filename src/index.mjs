@@ -254,6 +254,7 @@ export const afterAll = (body) => core.afterAll(body)
  * @property {Function} toBeLessThan - Compare two numbers (received < expected).
  * @property {Function} toContain - Check that an item is in an array or a string contains a substring.
  * @property {Function} toMatch - Check that a string matches a regular expression.
+ * @property {Function} toBeTypeOf - Check that a variable has a correct type
  */
 
 /**

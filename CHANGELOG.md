@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## Unreleased
+### Added
+- Based on [Add New Assertions for Enhanced Testing Capabilities](https://github.com/scripterio-js/scripterio/issues/63):
+    - `toBeTypeOf()` — Check that a variable has a correct type
+
+- Contributors:
+  - [Vadym Nastoiashchyi](https://github.com/VadimNastoyashchy)
 
 ## 1.11.0 - 2025-07-08
 ### Added

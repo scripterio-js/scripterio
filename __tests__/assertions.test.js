@@ -77,4 +77,17 @@ describe('Unit tests for assertions', () => {
     expect('test').toMatch('test')
     expect('test').toMatch(/test/i)
   })
+
+  test('Check assertion toBeType()', () => {
+    expect('Hello').toBeTypeOf('string')
+    expect(['ScripterI/O', 123]).toBeTypeOf('array')
+    expect(42).toBeTypeOf('number')
+    expect(true).toBeTypeOf('boolean')
+    expect({ key: 'value' }).toBeTypeOf('object')
+    expect(undefined).toBeTypeOf('undefined')
+    expect(null).toBeTypeOf('null')
+    expect(Symbol('sym')).toBeTypeOf('symbol')
+    expect(10n).toBeTypeOf('bigint')
+    expect(function () {}).toBeTypeOf('function')
+  })
 })

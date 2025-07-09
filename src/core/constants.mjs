@@ -30,3 +30,16 @@ export const REPORTERS = {
   CONSOLE: 'console',
   HTML: 'html',
 }
+
+export const TYPES = {
+  bigint: 'bigint',
+  boolean: 'boolean',
+  function: 'function',
+  number: 'number',
+  object: 'object',
+  string: 'string',
+  symbol: 'symbol',
+  array: 'array',
+  null: 'null',
+  undefined: 'undefined',
+}

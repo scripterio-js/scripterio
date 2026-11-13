@@ -33,6 +33,7 @@ export const result = {
 const makeDescribe = (name, options) => ({
   ...options,
   name,
+  parent: null,
   beforeEach: [],
   afterEach: [],
   children: [],
@@ -54,6 +55,7 @@ const handleDescribe = (name, optionsOrBody, body, extra = {}) => {
   const actualBody = typeof optionsOrBody === 'function' ? optionsOrBody : body
   const parentDescribe = currentDescribe
   currentDescribe = makeDescribe(name, { ...options, ...extra })
+  currentDescribe.parent = parentDescribe
   if (!extra.todo) actualBody?.()
   currentDescribe = {
     ...parentDescribe,
@@ -75,6 +77,19 @@ describe.todo = (name, optionsOrBody, body) => {
 const handleTest = (name, optionsOrBody, body, extra = {}) => {
   const options = typeof optionsOrBody === 'object' ? optionsOrBody : {}
   const actualBody = typeof optionsOrBody === 'function' ? optionsOrBody : body
+  let allTags = []
+  let describe = currentDescribe
+
+  while (describe) {
+    if (describe.tags) {
+      allTags = allTags.concat(
+        Array.isArray(describe.tags) ? describe.tags : [describe.tags]
+      )
+    }
+    describe = describe.parent
+  }
+
+  allTags = allTags.concat(options.tags || [])
   currentDescribe = {
     ...currentDescribe,
     children: [
@@ -84,7 +99,7 @@ const handleTest = (name, optionsOrBody, body, extra = {}) => {
           name,
           extra.todo ? () => {} : actualBody,
           options.timeout,
-          options.tags,
+          allTags,
           options.retry
         ),
         ...extra,
